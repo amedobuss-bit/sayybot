@@ -156,7 +156,7 @@ def show_mysara_gharib_books(client, callback_query):
 @app.on_callback_query(filters.regex(r"^send_mysara_"))
 def send_mysara_book(client, callback_query):
     book_map = {
-        "send_mysara_ramziyat": ("ميسرة الغريب/رَمْزِيَّات.pdf", "📝 كتاب: رمزيات"),
+        "send_mysara_ramziyat": ("ميسرة الغريب/رَمْزِيَّات.pdf", "📝 كتاب: رمزيات"), # تم التصحيح
         "send_mysara_shifaa_alayi": ("ميسرة الغريب/إنما شفاء العيّ السؤال.pdf", "📝 كتاب: إنما شفاء العي السؤال"),
         "send_mysara_kurab": ("ميسرة الغريب/الكُرَبُ وسُبُلُ تَفْرِيجِها.pdf", "📝 كتاب: الكُرَبُ وسُبُلُ تَفْرِيجِها"),
         "send_mysara_bidmaihim": ("ميسرة الغريب/سلسلة بدمائهم نصحوا 1.. منهج حياة.pdf", "📝 بدمائهم نصحوا1"),
@@ -196,7 +196,7 @@ AHLAM_ALNASER_BOOKS_MAP = {
     "send_ahlam_alnaser_book_8": ("أوار الحق/8 توضيح لا بد منه.pdf", "🌸 كتاب: 8 توضيح لا بد منه"),
     "send_ahlam_alnaser_book_9": ("أوار الحق/9 أتينا لنبقى.. وإن بلغت القلوب الحناجر!.pdf", "🌸 كتاب: 9 أتينا لنبقى.."),
     "send_ahlam_alnaser_book_10": ("أوار الحق/10 منشورات في التربية.pdf", "🌸 كتاب: 10 منشورات في التربية"),
-    "send_ahlam_alnaser_book_11": ("أوار الحق/11 إنَّني بريئةٌ منكَ.pdf", "🌸 كتاب: 11 إنَّني بريئةٌ منكَ"),
+    "send_ahlam_alnaser_book_11": ("أوار الحق/11 إنَّني بريئةٌ منكَ.pdf", "🌸 كتاب: 11 إنَّني بريئةٌ منكَ"), # تم التصحيح
     "send_ahlam_alnaser_book_12": ("أوار الحق/12 ديوان أوار الحق لأحلام النصر.pdf", "🌸 كتاب: 12 ديوان أوار الحق"),
     "send_ahlam_alnaser_book_13": ("أوار الحق/13 ديوان هدير المعامع لأحلام النصر.pdf", "🌸 كتاب: 13 ديوان هدير المعامع"),
     "send_ahlam_alnaser_book_14": ("أوار الحق/14 أفيـون السهولة، لأحلام النصر.pdf", "🌸 كتاب: 14 أفيـون السهولة"),
@@ -293,7 +293,8 @@ def show_aed_min_althalam_parts(client, callback_query):
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_ahlam_alnaser_books")])
     callback_query.message.edit_text("📚 قصة: عائد من الظلام - اختر الجزء:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex(r"^send_ahlam_alnaser_"))
+# تم تعديل هذا السطر ليشمل أجزاء القصة
+@app.on_callback_query(filters.regex(r"^(send_ahlam_alnaser_|send_aed_min_althalam_part_)"))
 def send_ahlam_alnaser_specific_book(client, callback_query):
     book_info = AHLAM_ALNASER_BOOKS_MAP.get(callback_query.data)
     if book_info:
