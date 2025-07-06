@@ -10,10 +10,11 @@ import io # استيراد مكتبة io للتعامل مع كائنات الب
 # إعداد الاتصال بالبوت
 app = Client(
     "safe_poetry_bot",
-    api_id=int(os.environ.get("23613053")),
-    api_hash=os.environ.get("ae6f029e868b731ff7c4ab0429f18fb5"),
-    bot_token=os.environ.get("7693900838:AAHBRpiVqAgzuvArq1edXTLCefuPBSTqyRk")
+    api_id=int(os.environ.get("API_ID")), 
+    api_hash=os.environ.get("API_HASH"),
+    bot_token=os.environ.get("BOT_TOKEN")
 )
+
 # 💬 رسالة الترحيب
 intro_message = (
     "بسمِ اللهِ ربِّ أبي أيوبَ وأصحابِه، وبه نستعين، وبعد:\n"
