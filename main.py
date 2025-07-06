@@ -7,13 +7,24 @@ import json
 import os # استيراد مكتبة os للتعامل مع المسارات
 import io # استيراد مكتبة io للتعامل مع كائنات البايتات كملفات
 
-# إعداد الاتصال بالبوت
+
+
+# أضف هذه الأسطر قبل إعداد الاتصال بالبوت للتشخيص
+print("--- DEBUGGING ENVIRONMENT VARIABLES ---")
+api_id_value = os.environ.get("API_ID")
+print(f"Value read for API_ID: {api_id_value}")
+print(f"Type of API_ID value: {type(api_id_value)}")
+print("------------------------------------")
+
+# الكود الأصلي
 app = Client(
     "safe_poetry_bot",
     api_id=int(os.environ.get("API_ID")), 
     api_hash=os.environ.get("API_HASH"),
     bot_token=os.environ.get("BOT_TOKEN")
 )
+
+
 
 # 💬 رسالة الترحيب
 intro_message = (
