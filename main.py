@@ -64,26 +64,28 @@ def start(client, message: Message):
 
 @app.on_callback_query(filters.regex("show_archive"))
 def show_archive(client, callback_query):
+    # تم تعديل ترتيب الأزرار فقط في هذا القسم
     keyboard = [
         [InlineKeyboardButton("📜 أ سـ ـامـ ـة بـ ن لـ اد ن", callback_data="show_osama_poems")],
+        [InlineKeyboardButton("📚 أبو حـ ـمـ ـزة المـ ـهـ ـاجـ ـر", callback_data="show_abu_hamza_books")],
+        [InlineKeyboardButton("📖 أبو أنس الفلسطيني", callback_data="show_abu_anas")],
+        [InlineKeyboardButton("📝 مـ يـسـ رة الغـ ريـ ب", callback_data="show_mysara_gharib_books")],
+        [InlineKeyboardButton("✍️ أبـ و الحـ سـ ن المـ هـ اجـر", callback_data="show_muhajir_books")],
+        [InlineKeyboardButton("🎙️ العـ دنـ انـ ي", callback_data="show_adnani_books")],
+        [InlineKeyboardButton("🗣️ أبو حمزة القرشي", callback_data="show_qurashi_books")],
+        [InlineKeyboardButton("👤 أبو عمر المهاجر", callback_data="show_abu_omar_books")],
+        [InlineKeyboardButton("⚔️ أبو بلال الحربي", callback_data="show_harbi_books")],
+        [InlineKeyboardButton("🌸 أحلام النصر الدمشقية", callback_data="show_ahlam_alnaser_books")],
+        # --- باقي الأسماء بترتيب غير مهم ---
         [InlineKeyboardButton("✍️ الشاعر أبـو مـالك شيبـة الحمـد", callback_data="show_shaybah_books")],
         [InlineKeyboardButton("👷 المهندس محمد الزهيري", callback_data="show_zuhayri_books")],
         [InlineKeyboardButton("✍️ بنت نجد", callback_data="show_bint_najd_books")],
         [InlineKeyboardButton("🦅 العقاب المصري", callback_data="show_oqab_masri")],
         [InlineKeyboardButton("✒️ مـرثد بن عبد الله", callback_data="show_marthad_abdullah")],
-        [InlineKeyboardButton("⚔️ أبو بلال الحربي", callback_data="show_harbi_books")],
         [InlineKeyboardButton("📘 أبو خيثمة الشنقـ يطي", callback_data="show_abu_khithama")],
         [InlineKeyboardButton("📗 لويس عطية الله", callback_data="show_louis")],
-        [InlineKeyboardButton("🎙️ العـ دنـ انـ ي", callback_data="show_adnani_books")],
-        [InlineKeyboardButton("✍️ أبـ و الحـ سـ ن المـ هـ اجـر", callback_data="show_muhajir_books")],
-        [InlineKeyboardButton("👤 أبو عمر المهاجر", callback_data="show_abu_omar_books")],
-        [InlineKeyboardButton("🗣️ أبو حمزة القرشي", callback_data="show_qurashi_books")],
-        [InlineKeyboardButton("📚 أبو حـ ـمـ ـزة المـ ـهـ ـاجـ ـر", callback_data="show_abu_hamza_books")],
-        [InlineKeyboardButton("📖 أبو أنس الفلسطيني", callback_data="show_abu_anas")],
-        [InlineKeyboardButton("📝 مـ يـسـ رة الغـ ريـ ب", callback_data="show_mysara_gharib_books")],
         [InlineKeyboardButton("📜 أبو بـ كـ ر المـ دني", callback_data="show_abu_bakr_madani_books")],
-        [InlineKeyboardButton("⚔️ حسين المعاضيدي", callback_data="show_hussein_almadidi")],
-        [InlineKeyboardButton("🌸 أحلام النصر الدمشقية", callback_data="show_ahlam_alnaser_books")]
+        [InlineKeyboardButton("⚔️ حسين المعاضيدي", callback_data="show_hussein_almadidi")]
     ]
     callback_query.message.edit_text("اختر مجموعة القصائد:", reply_markup=InlineKeyboardMarkup(keyboard))
 
