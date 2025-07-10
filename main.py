@@ -97,7 +97,7 @@ def show_osama_poems(client, callback_query):
 
 @app.on_callback_query(filters.regex(r"^poem_(\d+)$"))
 def show_poem(client, callback_query):
-    idx = int(callback_query.data.split("_")[1])
+    idx = int(callback_query.matches[0].group(1))
     if 0 <= idx < len(poems):
         poem = poems[idx]
         return_callback = "show_archive"
@@ -119,7 +119,7 @@ def show_harbi_books(client, callback_query):
     keyboard = [
         [InlineKeyboardButton("📖 وقفات مع الشيخ المربي", callback_data="send_harbi_pdf_1")],
         [InlineKeyboardButton("📖 ماذا فعلت بنا يا سعد؟", callback_data="send_harbi_pdf_2")],
-        [InlineKeyboardButton("📜 قصيدة: إذا بزغت خيوط الشمس", callback_data="poem_20")],
+        [InlineKeyboardButton("📜 قصيدة: إذا بزغت خيوط الشمس فينا", callback_data="poem_20")],
         [InlineKeyboardButton("📜 قصيدة: وأرواح تطير بجوف طير", callback_data="poem_21")],
         [InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")]
     ]
@@ -135,58 +135,117 @@ def send_harbi_pdf_2(client, callback_query):
     path = os.path.join("قصائد المشروع", "أبو بلال الحربي", "ماذا فعلت بنا يا سعد؟.pdf")
     send_file(client, callback_query, path, "📖 ماذا فعلت بنا يا سعد؟")
 
-
 # --- قسم الشاعر أبو مالك شيبة الحمد ---
 SHAYBAH_ALHAMAD_BOOKS_MAP = {
-    # ... (map content is long but included in the full code)
+    "send_shaybah_book_1": ("أزفتْ نهايةُ جبهةِ الجولاني - شيبة الحمد.pdf", "أزفتْ نهايةُ جبهةِ الجولاني"),
+    "send_shaybah_book_2": ("أنا مع أبي بكر- شعر شيبة الحمد.pdf", "أنا مع أبي بكر"),
+    "send_shaybah_book_3": ("الديوان العـرّيســة الشعري للشيخ شيبة الحمد.pdf", "الديوان العـرّيســة الشعري"),
+    "send_shaybah_book_4": ("الستينية فى ذكر سلاطين الخلافة العثمانية بقلم شيبة الحمد -للتعديل.pdf", "الستينية فى ذكر سلاطين الخلافة العثمانية"),
+    "send_shaybah_book_5": ("ديوان عبرة وعبير، شيبة الحمد.pdf", "ديوان عبرة وعبير"),
+    "send_shaybah_book_6": ("سلام و إكرام لدولة الإسلام.pdf", "سلام و إكرام لدولة الإسلام"),
+    "send_shaybah_book_7": ("على نهج الرسول - أبو مالك شيبة الحمد.pdf", "على نهج الرسول"),
+    "send_shaybah_book_8": ("قصيدة سلام على سجن كوبر شيبة الحمد.pdf", "قصيدة سلام على سجن كوبر"),
+    "send_shaybah_book_9": ("قصيدة أرق بالسيف كل دم كفور،_شيبة الحمد.pdf", "قصيدة أرق بالسيف كل دم كفور"),
+    "send_shaybah_book_10": ("قصيدة جحاجح القوقاز - شيبة الحمد.pdf", "قصيدة جحاجح القوقاز"),
+    "send_shaybah_book_11": ("قصيدة ذكـرتـك يـا أسـامـة دموع القلب شـيـبـة الـحـمـد.pdf", "قصيدة ذكـرتـك يـا أسـامـة"),
+    "send_shaybah_book_12": ("قصيدة رحل الشّهيد وما رحل، شيبة الحمد.pdf", "قصيدة رحل الشّهيد وما رحل"),
+    "send_shaybah_book_13": ("قصيدة صرخة من أزواد، شيبة الحمد.pdf", "قصيدة صرخة من أزواد"),
+    "send_shaybah_book_14": ("قصيدة فارس الإيمان، شيبة الحمد.pdf", "قصيدة فارس الإيمان"),
+    "send_shaybah_book_15": ("قصيدة متنا دعاة على أبواب عزتنا، شيبة الحمد.pdf", "قصيدة متنا دعاة على أبواب عزتنا"),
+    "send_shaybah_book_16": ("قصيدة متى يكسر الشعب أغلاله، شيبة الحمد.pdf", "قصيدة متى يكسر الشعب أغلاله"),
+    "send_shaybah_book_17": ("قصيدة نصرة لعبد الكريم_ الحميد، شيبة الحمد.pdf", "قصيدة نصرة لعبد الكريم الحميد"),
+    "send_shaybah_book_18": ("مرثية آل الشيخ أسامة للشاعر شيبة الحمد.pdf", "مرثية آل الشيخ أسامة"),
+    "send_shaybah_book_19": ("يا أسيراً خلفَ قضبانِ العدا.pdf", "يا أسيراً خلفَ قضبانِ العدا"),
+    "send_shaybah_book_20": ("يـا دارَ سِـرْتَ  الفاتحيـنَ للشيخ شيبة الحمد.pdf", "يـا دارَ سِـرْتَ  الفاتحيـنَ")
 }
 
 @app.on_callback_query(filters.regex("show_shaybah_books"))
 def show_shaybah_books(client, callback_query):
-    # ... (function content is long but included in the full code)
+    keyboard = [[InlineKeyboardButton(f"📖 {v[1]}", k)] for k, v in SHAYBAH_ALHAMAD_BOOKS_MAP.items()]
+    keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
+    callback_query.message.edit_text("✍️ اختر من مؤلفات الشاعر أبـو مـالك شيبـة الحمـد:", reply_markup=InlineKeyboardMarkup(keyboard))
 
 @app.on_callback_query(filters.regex(r"^send_shaybah_book_"))
 def send_shaybah_book(client, callback_query):
-    # ... (function content is long but included in the full code)
+    book_info = SHAYBAH_ALHAMAD_BOOKS_MAP.get(callback_query.data)
+    if book_info:
+        file_name, caption = book_info
+        path = os.path.join("قصائد المشروع", "الشاعر أبـو مـالك شيبـة الحمـد", file_name)
+        send_file(client, callback_query, path, f"📖 {caption}")
 
 # --- قسم المهندس محمد الزهيري ---
 ZUHAYRI_BOOKS_MAP = {
-    # ... (map content is long but included in the full code)
+    "send_zuhayri_book_1": ("أعدنا القادسية في شموخٍ - محمد الزهيري.pdf", "أعدنا القادسية في شموخٍ"),
+    "send_zuhayri_book_2": ("ركزنا في ذرى الأمجاد رمحاً - محمد الزهيري.pdf", "ركزنا في ذرى الأمجاد رمحاً"),
+    "send_zuhayri_book_3": ("ستزيد دعوتنا عزا وتمكينا -محمد الزهيري.pdf", "ستزيد دعوتنا عزا وتمكينا"),
+    "send_zuhayri_book_4": ("صليل الصوارم - محمد الزهيري.pdf", "صليل الصوارم"),
+    "send_zuhayri_book_5": ("عراق اﷲ یزخر بالغیارى محمد الزهيري.pdf", "عراق الله يزخر بالغياري"),
+    "send_zuhayri_book_6": ("قصيدة [مَنْ مُبلغٍ كلبَ الروافض ياسراً - نصرة لأم المؤمنين عائشة (رضي الله عنها)] للزهيري.pdf", "مَنْ مُبلغٍ كلبَ الروافض ياسراً"),
+    "send_zuhayri_book_7": ("قصيدة يكفي محمدا أن الله حافظه للاخ محمد الزهيري.pdf", "يكفي محمدا أن الله حافظه"),
+    "send_zuhayri_book_8": ("قصيدة_ستزيد_دعوتنا_عزا_محمد_الزهيري.pdf", "قصيدة ستزيد دعوتنا عزا"),
+    "send_zuhayri_book_9": ("قصيدة_مَنْ_مُبلغٍ_كلبَ_الروافض_ياسراً_نصرة_لأم_المؤمنين_عائشة_رضي.pdf", "قصيدة مَنْ مُبلغٍ كلبَ الروافض ياسراً"),
+    "send_zuhayri_book_10": ("قصيدة_نسجت_لكم_بقاني_الدم_محمد_الزهيري.pdf", "قصيدة نسجت لكم بقاني الدم"),
+    "send_zuhayri_book_11": ("نازلُ الأعماق للموت سعى -محمد الزهيري.pdf", "نازلُ الأعماق للموت سعى"),
+    "send_zuhayri_book_12": ("نسجت لكم بقاني الدم عهدا -محمد الزهيري.pdf", "نسجت لكم بقاني الدم عهدا"),
+    "send_zuhayri_book_13": ("هيهات ينــــزو كافـرٌ - محمد الزهيري.pdf", "هيهات ينــــزو كافـرٌ"),
+    "send_zuhayri_book_14": ("يا دولة التوحيد أينع زرعنا - محمد الزهيري.pdf", "يا دولة التوحيد أينع زرعنا")
 }
 
 @app.on_callback_query(filters.regex("show_zuhayri_books"))
 def show_zuhayri_books(client, callback_query):
-    # ... (function content is long but included in the full code)
+    keyboard = [[InlineKeyboardButton(f"📖 {v[1]}", k)] for k, v in ZUHAYRI_BOOKS_MAP.items()]
+    keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
+    callback_query.message.edit_text("👷 اختر من مؤلفات المهندس محمد الزهيري:", reply_markup=InlineKeyboardMarkup(keyboard))
 
 @app.on_callback_query(filters.regex(r"^send_zuhayri_book_"))
 def send_zuhayri_book(client, callback_query):
-    # ... (function content is long but included in the full code)
+    book_info = ZUHAYRI_BOOKS_MAP.get(callback_query.data)
+    if book_info:
+        file_name, caption = book_info
+        path = os.path.join("قصائد المشروع", "المهندس محمد الزهيري", file_name)
+        send_file(client, callback_query, path, f"📖 {caption}")
 
 # --- قسم بنت نجد ---
 BINT_NAJD_BOOKS_MAP = {
-    # ... (map content is long but included in the full code)
+    "send_bint_najd_book_1": ("أمسِكْ لسانكَ يا قُنيبي.pdf", "أمسِكْ لسانكَ يا قُنيبي"),
+    "send_bint_najd_book_2": ("فرعونُ نجد ستنتهي أيامهُ.pdf", "فرعونُ نجد ستنتهي أيامهُ"),
+    "send_bint_najd_book_3": ("مادحة للعدناني هاجية للجولاني.pdf", "مادحة للعدناني هاجية للجولاني"),
+    "send_bint_najd_book_4": ("هذه دولة الإسلام، ياعشماوي - بنت نجد.pdf", "هذه دولة الإسلام، ياعشماوي")
 }
 
 @app.on_callback_query(filters.regex("show_bint_najd_books"))
 def show_bint_najd_books(client, callback_query):
-    # ... (function content is long but included in the full code)
+    keyboard = [[InlineKeyboardButton(f"✍️ {v[1]}", k)] for k, v in BINT_NAJD_BOOKS_MAP.items()]
+    keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
+    callback_query.message.edit_text("✍️ اختر من مؤلفات بنت نجد:", reply_markup=InlineKeyboardMarkup(keyboard))
 
 @app.on_callback_query(filters.regex(r"^send_bint_najd_book_"))
 def send_bint_najd_book(client, callback_query):
-    # ... (function content is long but included in the full code)
-    
+    book_info = BINT_NAJD_BOOKS_MAP.get(callback_query.data)
+    if book_info:
+        file_name, caption = book_info
+        path = os.path.join("قصائد المشروع", "بنت نجد", file_name)
+        send_file(client, callback_query, path, f"✍️ {caption}")
+
 # --- قسم العقاب المصري ---
 OQAB_MASRI_BOOKS_MAP = {
-    # ... (map content is long but included in the full code)
+    "send_oqab_book_1": ("إلى ابْنَتي مَوَدَّة.pdf", "إلى ابْنَتي مَوَدَّة"),
+    "send_oqab_book_2": ("هنا الخلافة- ديوان شعري العقاب المصري.pdf", "هنا الخلافة - ديوان شعري")
 }
 
 @app.on_callback_query(filters.regex("show_oqab_masri"))
 def show_oqab_masri(client, callback_query):
-    # ... (function content is long but included in the full code)
+    keyboard = [[InlineKeyboardButton(f"🦅 {v[1]}", k)] for k, v in OQAB_MASRI_BOOKS_MAP.items()]
+    keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
+    callback_query.message.edit_text("🦅 اختر من مؤلفات العقاب المصري:", reply_markup=InlineKeyboardMarkup(keyboard))
 
 @app.on_callback_query(filters.regex(r"^send_oqab_book_"))
 def send_oqab_book(client, callback_query):
-    # ... (function content is long but included in the full code)
+    book_info = OQAB_MASRI_BOOKS_MAP.get(callback_query.data)
+    if book_info:
+        file_name, caption = book_info
+        path = os.path.join("قصائد المشروع", "العقاب المصري", file_name)
+        send_file(client, callback_query, path, f"🦅 {caption}")
 
 # --- قسم مرثد بن عبد الله ---
 @app.on_callback_query(filters.regex("show_marthad_abdullah"))
