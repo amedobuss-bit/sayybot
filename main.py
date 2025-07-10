@@ -71,11 +71,12 @@ def show_archive(client, callback_query):
         [InlineKeyboardButton("📜 أ سـ ـامـ ـة بـ ن لـ اد ن", callback_data="show_osama_poems")],
         [InlineKeyboardButton("📘 أبو خيثمة الشنقـ يطي", callback_data="show_abu_khithama")],
         [InlineKeyboardButton("📗 لويس عطية الله", callback_data="show_louis")],
+        [InlineKeyboardButton("🎙️ العدناني", callback_data="show_adnani_books")], # ## الإضافة الأولى: زر العدناني
         [InlineKeyboardButton("📚 أبو حـ ـمـ ـزة المـ ـهـ ـاجـ ـر", callback_data="show_abu_hamza_books")],
         [InlineKeyboardButton("📖 أبو أنس الفلسطيني", callback_data="show_abu_anas")],
         [InlineKeyboardButton("📝 مـ يـسـ رة الغـ ريـ ب", callback_data="show_mysara_gharib_books")],
         [InlineKeyboardButton("📜 أبو بـ كـ ر المـ دني", callback_data="show_abu_bakr_madani_books")],
-        [InlineKeyboardButton("⚔️ حسين المعاضيدي", callback_data="show_hussein_almadidi")], # ## التعديل الأول: إضافة الزر الجديد هنا
+        [InlineKeyboardButton("⚔️ حسين المعاضيدي", callback_data="show_hussein_almadidi")],
         [InlineKeyboardButton("🌸 أحلام النصر الدمشقية", callback_data="show_ahlam_alnaser_books")]
     ]
     callback_query.message.edit_text("اختر مجموعة القصائد:", reply_markup=InlineKeyboardMarkup(keyboard))
@@ -116,6 +117,28 @@ def show_abu_khithama(client, callback_query):
 def show_louis(client, callback_query):
     path = os.path.join("قصائد المشروع", "لويس_مقالات.pdf")
     send_file(client, callback_query, path, "📗 مجموعة مقالات لويس عطية الله")
+
+# ## الإضافة الثانية: دالة جديدة لعرض كتب العدناني
+@app.on_callback_query(filters.regex("show_adnani_books"))
+def show_adnani_books(client, callback_query):
+    keyboard = [
+        [InlineKeyboardButton("📖 الجامع لكلمات العدناني", callback_data="send_adnani_aljami")],
+        [InlineKeyboardButton("📜 قصيدة معركة الفلوجة الثانية", callback_data="send_adnani_qasida")],
+        [InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")]
+    ]
+    callback_query.message.edit_text("🎙️ اختر من مؤلفات العدناني:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+# ## الإضافة الثالثة: دوال إرسال ملفات العدناني
+@app.on_callback_query(filters.regex("send_adnani_aljami"))
+def send_adnani_aljami(client, callback_query):
+    path = os.path.join("قصائد المشروع", "العدناني", "الجامع للعدناني.pdf")
+    send_file(client, callback_query, path, "📖 الجامع لكلمات العدناني")
+
+@app.on_callback_query(filters.regex("send_adnani_qasida"))
+def send_adnani_qasida(client, callback_query):
+    path = os.path.join("قصائد المشروع", "العدناني", "قصيدة معركة الفلوجة الثانية.pdf")
+    send_file(client, callback_query, path, "📜 قصيدة معركة الفلوجة الثانية")
+
 
 @app.on_callback_query(filters.regex("show_abu_hamza_books"))
 def show_abu_hamza_books(client, callback_query):
@@ -184,12 +207,11 @@ def send_abu_bakr_madani_laft_alanzar(client, callback_query):
     path = os.path.join("قصائد المشروع", "أبو بكر المدني", "لفت_الأنظار_لما_جاء_في_الفلوجتين_من_أخبار_1.pdf")
     send_file(client, callback_query, path, "📜 كتاب: لفت الأنظار لما جاء في الفلـ وجتين من أخبار1 (أبو بـ كـ ر المـ دني)")
 
-# ## التعديل الثاني: إضافة دالة جديدة للكتاب الجديد
-# ## الدالة الجديدة (الصحيحة)
 @app.on_callback_query(filters.regex("show_hussein_almadidi"))
 def show_hussein_almadidi(client, callback_query):
-    path = os.path.join("قصائد المشروع", "حسين المعاضيدي", "هنا أرض الخلافة- حسين المعاضيدي.pdf") # <-- تم التصحيح
+    path = os.path.join("قصائد المشروع", "حسين المعاضيدي", "هنا أرض الخلافة- حسين المعاضيدي.pdf")
     send_file(client, callback_query, path, "⚔️ كتاب: هنا أرض الخلافة (حسين المعاضيدي)")
+
 # --- قسم أحلام النصر ---
 
 AHLAM_ALNASER_BOOKS_MAP = {
@@ -300,7 +322,6 @@ def show_aed_min_althalam_parts(client, callback_query):
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_ahlam_alnaser_books")])
     callback_query.message.edit_text("📚 قصة: عائد من الظلام - اختر الجزء:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-# ## التعديل الثالث: التأكد من أن هذه الدالة تشمل كل الأسماء
 @app.on_callback_query(filters.regex(r"^(send_ahlam_alnaser_|send_aed_min_althalam_part_)"))
 def send_ahlam_alnaser_specific_book(client, callback_query):
     book_info = AHLAM_ALNASER_BOOKS_MAP.get(callback_query.data)
