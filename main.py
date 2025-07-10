@@ -74,6 +74,7 @@ def show_archive(client, callback_query):
         [InlineKeyboardButton("🎙️ العـ دنـ انـ ي", callback_data="show_adnani_books")],
         [InlineKeyboardButton("✍️ أبـ و الحـ سـ ن المـ هـ اجـر", callback_data="show_muhajir_books")],
         [InlineKeyboardButton("👤 أبو عمر المهاجر", callback_data="show_abu_omar_books")],
+        [InlineKeyboardButton("🗣️ أبو حمزة القرشي", callback_data="show_qurashi_books")], # ## الإضافة هنا
         [InlineKeyboardButton("📚 أبو حـ ـمـ ـزة المـ ـهـ ـاجـ ـر", callback_data="show_abu_hamza_books")],
         [InlineKeyboardButton("📖 أبو أنس الفلسطيني", callback_data="show_abu_anas")],
         [InlineKeyboardButton("📝 مـ يـسـ رة الغـ ريـ ب", callback_data="show_mysara_gharib_books")],
@@ -104,8 +105,7 @@ def show_poem(client, callback_query):
     if 0 <= idx < len(poems):
         poem = poems[idx]
         
-        # تحديد قائمة الرجوع الصحيحة
-        return_callback = "show_archive" # القيمة الافتراضية
+        return_callback = "show_archive"
         if 0 <= idx <= 9:
              return_callback = "show_osama_poems"
         elif idx == 10:
@@ -156,7 +156,7 @@ def send_adnani_qasida(client, callback_query):
 @app.on_callback_query(filters.regex("show_muhajir_books"))
 def show_muhajir_books(client, callback_query):
     keyboard = [
-        [InlineKeyboardButton("📚 الجامع لكلمات أبو الحسن المهاجر", callback_data="send_muhajir_aljami")],
+        [InlineKeyboardButton("📚 الجامع لكلمات أبي الحسن المهاجر", callback_data="send_muhajir_aljami")],
         [InlineKeyboardButton("📜 قصيدة: جيل المكرمات", callback_data="poem_11")],
         [InlineKeyboardButton("📄 مقتطف حول علماء السوء", callback_data="poem_12")],
         [InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")]
@@ -166,7 +166,7 @@ def show_muhajir_books(client, callback_query):
 @app.on_callback_query(filters.regex("send_muhajir_aljami"))
 def send_muhajir_aljami(client, callback_query):
     path = os.path.join("قصائد المشروع", "أبو الحسن المهاجر", "الجامع لكلمات أبي الحسن المهاجر.pdf")
-    send_file(client, callback_query, path, "📚 الجامع لكلمات أبو الحسن المهاجر")
+    send_file(client, callback_query, path, "📚 الجامع لكلمات أبي الحسن المهاجر")
 
 @app.on_callback_query(filters.regex("show_abu_omar_books"))
 def show_abu_omar_books(client, callback_query):
@@ -181,6 +181,12 @@ def show_abu_omar_books(client, callback_query):
         [InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")]
     ]
     callback_query.message.edit_text("👤 اختر من مؤلفات أبي عمر المهاجر:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+# ## دالة جديدة لأبي حمزة القرشي
+@app.on_callback_query(filters.regex("show_qurashi_books"))
+def show_qurashi_books(client, callback_query):
+    path = os.path.join("قصائد المشروع", "أبو حمزة القرشي", "الجامع لكلمات أبي حمزة القرشي.pdf")
+    send_file(client, callback_query, path, "📚 الجامع لكلمات أبي حمزة القرشي")
 
 @app.on_callback_query(filters.regex("show_abu_hamza_books"))
 def show_abu_hamza_books(client, callback_query):
@@ -260,6 +266,7 @@ AHLAM_ALNASER_BOOKS_MAP = {
     # ... (map content is long but included in the full code)
 }
 
+# Dynamically add all 35 parts of the story to the map
 for i in range(1, 36):
     AHLAM_ALNASER_BOOKS_MAP[f"send_aed_min_althalam_part_{i}"] = (
         os.path.join("أوار الحق", "أجزاء قصة عائد من الظلام", f"AMT-E{i}.pdf"),
