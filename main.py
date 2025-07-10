@@ -71,7 +71,7 @@ def show_archive(client, callback_query):
         [InlineKeyboardButton("📜 أ سـ ـامـ ـة بـ ن لـ اد ن", callback_data="show_osama_poems")],
         [InlineKeyboardButton("📘 أبو خيثمة الشنقـ يطي", callback_data="show_abu_khithama")],
         [InlineKeyboardButton("📗 لويس عطية الله", callback_data="show_louis")],
-        [InlineKeyboardButton("🎙️ العدناني", callback_data="show_adnani_books")], # ## الإضافة الأولى: زر العدناني
+        [InlineKeyboardButton("🎙️ العدنـ اني", callback_data="show_adnani_books")],
         [InlineKeyboardButton("📚 أبو حـ ـمـ ـزة المـ ـهـ ـاجـ ـر", callback_data="show_abu_hamza_books")],
         [InlineKeyboardButton("📖 أبو أنس الفلسطيني", callback_data="show_abu_anas")],
         [InlineKeyboardButton("📝 مـ يـسـ رة الغـ ريـ ب", callback_data="show_mysara_gharib_books")],
@@ -84,11 +84,13 @@ def show_archive(client, callback_query):
 # --- قسم أسامة بن لادن (قصائد نصية) ---
 @app.on_callback_query(filters.regex("show_osama_poems"))
 def show_osama_poems(client, callback_query):
-    if not poems:
-        callback_query.answer("عذراً، لا توجد قصائد متاحة حالياً.", show_alert=True)
+    # هذه الدالة الآن تعرض فقط قصائد أسامة بن لادن (أول 10 قصائد في الملف)
+    osama_poems = poems[:10]
+    if not osama_poems:
+        callback_query.answer("عذراً، لا توجد قصائد متاحة حالياً لأسامة بن لادن.", show_alert=True)
         return
 
-    keyboard = [[InlineKeyboardButton(p["title"], callback_data=f"poem_{i}")] for i, p in enumerate(poems)]
+    keyboard = [[InlineKeyboardButton(p["title"], callback_data=f"poem_{i}")] for i, p in enumerate(osama_poems)]
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
     callback_query.message.edit_text(
         "📖 قائمة القصائد:\n\n(أ سـ ـامـ ـة بـ ن لـ اد ن)",
@@ -97,12 +99,20 @@ def show_osama_poems(client, callback_query):
 
 @app.on_callback_query(filters.regex(r"^poem_\d+$"))
 def show_poem(client, callback_query):
+    # هذه الدالة الآن تعرض أي قصيدة من القائمة بناء على رقمها
     idx = int(callback_query.data.split("_")[1])
     if 0 <= idx < len(poems):
         poem = poems[idx]
+        
+        # تحديد قائمة الرجوع الصحيحة
+        # هذا مثال بسيط، يمكن تطويره ليكون أكثر ذكاءً
+        return_callback = "show_osama_poems"
+        if "الدهر" in poem['title']:
+             return_callback = "show_adnani_books"
+
         callback_query.message.edit_text(
             f"📖 {poem['title']}\n\n{poem['content']}",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ رجوع", callback_data="show_osama_poems")]])
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ رجوع", callback_data=return_callback)]])
         )
     else:
         callback_query.answer("عذراً، القصيدة المطلوبة غير موجودة.", show_alert=True)
@@ -118,25 +128,26 @@ def show_louis(client, callback_query):
     path = os.path.join("قصائد المشروع", "لويس_مقالات.pdf")
     send_file(client, callback_query, path, "📗 مجموعة مقالات لويس عطية الله")
 
-# ## الإضافة الثانية: دالة جديدة لعرض كتب العدناني
+# ## تعديل: قائمة العدناني الآن تحتوي على القصيدة النصية
 @app.on_callback_query(filters.regex("show_adnani_books"))
 def show_adnani_books(client, callback_query):
+    # الرقم 10 هو فهرس القصيدة الجديدة في ملف poems.json (لأنها القصيدة رقم 11، والفهرسة تبدأ من 0)
     keyboard = [
-        [InlineKeyboardButton("📖 الجامع لكلمات العدناني", callback_data="send_adnani_aljami")],
+        [InlineKeyboardButton("📖 الجامع لكلمات العدنـ اني", callback_data="send_adnani_aljami")],
         [InlineKeyboardButton("📜 قصيدة معركة الفلوجة الثانية", callback_data="send_adnani_qasida")],
+        [InlineKeyboardButton("📄 قصيدة: إنّا لريب الدهر", callback_data="poem_10")],
         [InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")]
     ]
-    callback_query.message.edit_text("🎙️ اختر من مؤلفات العدناني:", reply_markup=InlineKeyboardMarkup(keyboard))
+    callback_query.message.edit_text("🎙️ اختر من مؤلفات العدنـ اني:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-# ## الإضافة الثالثة: دوال إرسال ملفات العدناني
 @app.on_callback_query(filters.regex("send_adnani_aljami"))
 def send_adnani_aljami(client, callback_query):
-    path = os.path.join("قصائد المشروع", "العدناني", "الجامع للعدناني.pdf")
-    send_file(client, callback_query, path, "📖 الجامع لكلمات العدناني")
+    path = os.path.join("قصائد المشروع", "العدنـ ـاني", "الجامع للعدـ نانـ ـي.pdf")
+    send_file(client, callback_query, path, "📖 الجامع لكلمات العدنـ ـاني")
 
 @app.on_callback_query(filters.regex("send_adnani_qasida"))
 def send_adnani_qasida(client, callback_query):
-    path = os.path.join("قصائد المشروع", "العدناني", "قصيدة معركة الفلوجة الثانية.pdf")
+    path = os.path.join("قصائد المشروع", "العدنــــ ـاني", "قصيدة معركة الفلوجة الثانية.pdf")
     send_file(client, callback_query, path, "📜 قصيدة معركة الفلوجة الثانية")
 
 
