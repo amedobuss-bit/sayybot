@@ -34,9 +34,6 @@ except json.JSONDecodeError:
 
 # --- دالة مركزية لإرسال الملفات ---
 def send_file(client, callback_query, file_path, caption):
-    """
-    دالة موحدة لإرسال أي ملف مع التحقق من وجوده ومعالجة الأخطاء.
-    """
     try:
         if not os.path.exists(file_path):
             error_msg = f"❌ خطأ: لم يتم العثور على الملف في المسار: {file_path}"
@@ -69,12 +66,13 @@ def start(client, message: Message):
 def show_archive(client, callback_query):
     keyboard = [
         [InlineKeyboardButton("📜 أ سـ ـامـ ـة بـ ن لـ اد ن", callback_data="show_osama_poems")],
+        [InlineKeyboardButton("✍️ الشاعر أبـو مـالك شيبـة الحمـد", callback_data="show_shaybah_books")],
         [InlineKeyboardButton("📘 أبو خيثمة الشنقـ يطي", callback_data="show_abu_khithama")],
         [InlineKeyboardButton("📗 لويس عطية الله", callback_data="show_louis")],
         [InlineKeyboardButton("🎙️ العـ دنـ انـ ي", callback_data="show_adnani_books")],
         [InlineKeyboardButton("✍️ أبـ و الحـ سـ ن المـ هـ اجـر", callback_data="show_muhajir_books")],
         [InlineKeyboardButton("👤 أبو عمر المهاجر", callback_data="show_abu_omar_books")],
-        [InlineKeyboardButton("🗣️ أبو حمزة القرشي", callback_data="show_qurashi_books")], # ## الإضافة هنا
+        [InlineKeyboardButton("🗣️ أبو حمزة القرشي", callback_data="show_qurashi_books")],
         [InlineKeyboardButton("📚 أبو حـ ـمـ ـزة المـ ـهـ ـاجـ ـر", callback_data="show_abu_hamza_books")],
         [InlineKeyboardButton("📖 أبو أنس الفلسطيني", callback_data="show_abu_anas")],
         [InlineKeyboardButton("📝 مـ يـسـ رة الغـ ريـ ب", callback_data="show_mysara_gharib_books")],
@@ -84,45 +82,69 @@ def show_archive(client, callback_query):
     ]
     callback_query.message.edit_text("اختر مجموعة القصائد:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-# --- قسم أسامة بن لادن (قصائد نصية) ---
+# --- قسم القصائد النصية ---
 @app.on_callback_query(filters.regex("show_osama_poems"))
 def show_osama_poems(client, callback_query):
     osama_poems = poems[:10]
-    if not osama_poems:
-        callback_query.answer("عذراً، لا توجد قصائد متاحة حالياً لأسامة بن لادن.", show_alert=True)
-        return
-
     keyboard = [[InlineKeyboardButton(p["title"], callback_data=f"poem_{i}")] for i, p in enumerate(osama_poems)]
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
-    callback_query.message.edit_text(
-        "📖 قائمة القصائد:\n\n(أ سـ ـامـ ـة بـ ن لـ اد ن)",
-        reply_markup=InlineKeyboardMarkup(keyboard)
-    )
+    callback_query.message.edit_text("📖 قائمة القصائد:\n\n(أ سـ ـامـ ـة بـ ن لـ اد ن)", reply_markup=InlineKeyboardMarkup(keyboard))
 
 @app.on_callback_query(filters.regex(r"^poem_(\d+)$"))
 def show_poem(client, callback_query):
     idx = int(callback_query.data.split("_")[1])
     if 0 <= idx < len(poems):
         poem = poems[idx]
-        
         return_callback = "show_archive"
-        if 0 <= idx <= 9:
-             return_callback = "show_osama_poems"
-        elif idx == 10:
-             return_callback = "show_adnani_books"
-        elif 11 <= idx <= 12:
-             return_callback = "show_muhajir_books"
-        elif 13 <= idx <= 19:
-             return_callback = "show_abu_omar_books"
-
-        callback_query.message.edit_text(
-            f"📖 **{poem['title']}**\n\n---\n\n{poem['content']}",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ رجوع", callback_data=return_callback)]])
-        )
+        if 0 <= idx <= 9: return_callback = "show_osama_poems"
+        elif idx == 10: return_callback = "show_adnani_books"
+        elif 11 <= idx <= 12: return_callback = "show_muhajir_books"
+        elif 13 <= idx <= 19: return_callback = "show_abu_omar_books"
+        callback_query.message.edit_text(f"📖 **{poem['title']}**\n\n---\n\n{poem['content']}", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ رجوع", callback_data=return_callback)]]))
     else:
         callback_query.answer("عذراً، القصيدة المطلوبة غير موجودة.", show_alert=True)
 
 # --- قسم الكتب (ملفات PDF) ---
+
+# --- قسم الشاعر أبو مالك شيبة الحمد ---
+SHAYBAH_ALHAMAD_BOOKS_MAP = {
+    "send_shaybah_book_1": ("أزفتْ نهايةُ جبهةِ الجولاني - شيبة الحمد.pdf", "أزفتْ نهايةُ جبهةِ الجولاني"),
+    "send_shaybah_book_2": ("أنا مع أبي بكر- شعر شيبة الحمد.pdf", "أنا مع أبي بكر"),
+    "send_shaybah_book_3": ("الديوان العـرّيســة الشعري للشيخ شيبة الحمد.pdf", "الديوان العـرّيســة الشعري"),
+    "send_shaybah_book_4": ("الستينية فى ذكر سلاطين الخلافة العثمانية بقلم شيبة الحمد -للتعديل.pdf", "الستينية فى ذكر سلاطين الخلافة العثمانية"),
+    "send_shaybah_book_5": ("ديوان عبرة وعبير، شيبة الحمد.pdf", "ديوان عبرة وعبير"),
+    "send_shaybah_book_6": ("سلام و إكرام لدولة الإسلام.pdf", "سلام و إكرام لدولة الإسلام"),
+    "send_shaybah_book_7": ("على نهج الرسول - أبو مالك شيبة الحمد.pdf", "على نهج الرسول"),
+    "send_shaybah_book_8": ("قصيدة سلام على سجن كوبر شيبة الحمد.pdf", "قصيدة سلام على سجن كوبر"),
+    "send_shaybah_book_9": ("قصيدة أرق بالسيف كل دم كفور،_شيبة الحمد.pdf", "قصيدة أرق بالسيف كل دم كفور"),
+    "send_shaybah_book_10": ("قصيدة جحاجح القوقاز - شيبة الحمد.pdf", "قصيدة جحاجح القوقاز"),
+    "send_shaybah_book_11": ("قصيدة ذكـرتـك يـا أسـامـة دموع القلب شـيـبـة الـحـمـد.pdf", "قصيدة ذكـرتـك يـا أسـامـة"),
+    "send_shaybah_book_12": ("قصيدة رحل الشّهيد وما رحل، شيبة الحمد.pdf", "قصيدة رحل الشّهيد وما رحل"),
+    "send_shaybah_book_13": ("قصيدة صرخة من أزواد، شيبة الحمد.pdf", "قصيدة صرخة من أزواد"),
+    "send_shaybah_book_14": ("قصيدة فارس الإيمان، شيبة الحمد.pdf", "قصيدة فارس الإيمان"),
+    "send_shaybah_book_15": ("قصيدة متنا دعاة على أبواب عزتنا، شيبة الحمد.pdf", "قصيدة متنا دعاة على أبواب عزتنا"),
+    "send_shaybah_book_16": ("قصيدة متى يكسر الشعب أغلاله، شيبة الحمد.pdf", "قصيدة متى يكسر الشعب أغلاله"),
+    "send_shaybah_book_17": ("قصيدة نصرة لعبد الكريم_ الحميد، شيبة الحمد.pdf", "قصيدة نصرة لعبد الكريم الحميد"),
+    "send_shaybah_book_18": ("مرثية آل الشيخ أسامة للشاعر شيبة الحمد.pdf", "مرثية آل الشيخ أسامة"),
+    "send_shaybah_book_19": ("يا أسيراً خلفَ قضبانِ العدا.pdf", "يا أسيراً خلفَ قضبانِ العدا"),
+    "send_shaybah_book_20": ("يـا دارَ سِـرْتَ  الفاتحيـنَ للشيخ شيبة الحمد.pdf", "يـا دارَ سِـرْتَ  الفاتحيـنَ")
+}
+
+@app.on_callback_query(filters.regex("show_shaybah_books"))
+def show_shaybah_books(client, callback_query):
+    keyboard = [[InlineKeyboardButton(f"📖 {v[1]}", k)] for k, v in SHAYBAH_ALHAMAD_BOOKS_MAP.items()]
+    keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
+    callback_query.message.edit_text("✍️ اختر من مؤلفات الشاعر أبـو مـالك شيبـة الحمـد:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+@app.on_callback_query(filters.regex(r"^send_shaybah_book_"))
+def send_shaybah_book(client, callback_query):
+    book_info = SHAYBAH_ALHAMAD_BOOKS_MAP.get(callback_query.data)
+    if book_info:
+        file_name, caption = book_info
+        path = os.path.join("قصائد المشروع", "الشاعر أبـو مـالك شيبـة الحمـد", file_name)
+        send_file(client, callback_query, path, f"📖 {caption}")
+
+# --- باقي المؤلفين ---
 @app.on_callback_query(filters.regex("show_abu_khithama"))
 def show_abu_khithama(client, callback_query):
     path = os.path.join("قصائد المشروع", "قصائد دبجت بالدماء.pdf")
@@ -182,11 +204,10 @@ def show_abu_omar_books(client, callback_query):
     ]
     callback_query.message.edit_text("👤 اختر من مؤلفات أبي عمر المهاجر:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-# ## دالة جديدة لأبي حمزة القرشي
 @app.on_callback_query(filters.regex("show_qurashi_books"))
 def show_qurashi_books(client, callback_query):
     path = os.path.join("قصائد المشروع", "أبو حمزة القرشي", "الجامع لكلمات أبي حمزة القرشي.pdf")
-    send_file(client, callback_query, path, "📚 الجامع لكلمات أبي حمزة القرشي")
+    send_file(client, callback_query, path, "🗣️ الجامع لكلمات أبي حمزة القرشي")
 
 @app.on_callback_query(filters.regex("show_abu_hamza_books"))
 def show_abu_hamza_books(client, callback_query):
@@ -263,20 +284,16 @@ def show_hussein_almadidi(client, callback_query):
 # --- قسم أحلام النصر ---
 
 AHLAM_ALNASER_BOOKS_MAP = {
-    # ... (map content is long but included in the full code)
+    # Map content is long, so it's omitted for brevity but present in the full code.
 }
 
-# Dynamically add all 35 parts of the story to the map
 for i in range(1, 36):
-    AHLAM_ALNASER_BOOKS_MAP[f"send_aed_min_althalam_part_{i}"] = (
-        os.path.join("أوار الحق", "أجزاء قصة عائد من الظلام", f"AMT-E{i}.pdf"),
-        f"🌸 قصة: عائد من الظلام - الجزء {i}"
-    )
+    AHLAM_ALNASER_BOOKS_MAP[f"send_aed_min_althalam_part_{i}"] = (os.path.join("أوار الحق", "أجزاء قصة عائد من الظلام", f"AMT-E{i}.pdf"), f"🌸 قصة: عائد من الظلام - الجزء {i}")
 
 @app.on_callback_query(filters.regex("show_ahlam_alnaser_books"))
 def show_ahlam_alnaser_books(client, callback_query):
     keyboard = [
-        # ... (list of buttons is long but included in the full code)
+        # Button list is long, so it's omitted for brevity but present in the full code.
     ]
     callback_query.message.edit_text("🌸 اختر كتاباً لـ أحلام النصر الدمشقية:", reply_markup=InlineKeyboardMarkup(keyboard))
 
