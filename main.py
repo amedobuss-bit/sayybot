@@ -67,6 +67,10 @@ def show_archive(client, callback_query):
     keyboard = [
         [InlineKeyboardButton("📜 أ سـ ـامـ ـة بـ ن لـ اد ن", callback_data="show_osama_poems")],
         [InlineKeyboardButton("✍️ الشاعر أبـو مـالك شيبـة الحمـد", callback_data="show_shaybah_books")],
+        [InlineKeyboardButton("👷 المهندس محمد الزهيري", callback_data="show_zuhayri_books")],
+        [InlineKeyboardButton("✍️ بنت نجد", callback_data="show_bint_najd_books")],
+        [InlineKeyboardButton("🦅 العقاب المصري", callback_data="show_oqab_masri")],
+        [InlineKeyboardButton("✒️ مـرثد بن عبد الله", callback_data="show_marthad_abdullah")],
         [InlineKeyboardButton("📘 أبو خيثمة الشنقـ يطي", callback_data="show_abu_khithama")],
         [InlineKeyboardButton("📗 لويس عطية الله", callback_data="show_louis")],
         [InlineKeyboardButton("🎙️ العـ دنـ انـ ي", callback_data="show_adnani_books")],
@@ -143,6 +147,86 @@ def send_shaybah_book(client, callback_query):
         file_name, caption = book_info
         path = os.path.join("قصائد المشروع", "الشاعر أبـو مـالك شيبـة الحمـد", file_name)
         send_file(client, callback_query, path, f"📖 {caption}")
+
+# --- قسم المهندس محمد الزهيري ---
+ZUHAYRI_BOOKS_MAP = {
+    "send_zuhayri_book_1": ("أعدنا القادسية في شموخٍ - محمد الزهيري.pdf", "أعدنا القادسية في شموخٍ"),
+    "send_zuhayri_book_2": ("ركزنا في ذرى الأمجاد رمحاً - محمد الزهيري.pdf", "ركزنا في ذرى الأمجاد رمحاً"),
+    "send_zuhayri_book_3": ("ستزيد دعوتنا عزا وتمكينا -محمد الزهيري.pdf", "ستزيد دعوتنا عزا وتمكينا"),
+    "send_zuhayri_book_4": ("صليل الصوارم - محمد الزهيري.pdf", "صليل الصوارم"),
+    "send_zuhayri_book_5": ("عراق اﷲ یزخر بالغیارى محمد الزهيري.pdf", "عراق الله يزخر بالغياري"),
+    "send_zuhayri_book_6": ("قصيدة [مَنْ مُبلغٍ كلبَ الروافض ياسراً - نصرة لأم المؤمنين عائشة (رضي الله عنها)] للزهيري.pdf", "مَنْ مُبلغٍ كلبَ الروافض ياسراً"),
+    "send_zuhayri_book_7": ("قصيدة يكفي محمدا أن الله حافظه للاخ محمد الزهيري.pdf", "يكفي محمدا أن الله حافظه"),
+    "send_zuhayri_book_8": ("قصيدة_ستزيد_دعوتنا_عزا_محمد_الزهيري.pdf", "قصيدة ستزيد دعوتنا عزا"),
+    "send_zuhayri_book_9": ("قصيدة_مَنْ_مُبلغٍ_كلبَ_الروافض_ياسراً_نصرة_لأم_المؤمنين_عائشة_رضي.pdf", "قصيدة مَنْ مُبلغٍ كلبَ الروافض ياسراً"),
+    "send_zuhayri_book_10": ("قصيدة_نسجت_لكم_بقاني_الدم_محمد_الزهيري.pdf", "قصيدة نسجت لكم بقاني الدم"),
+    "send_zuhayri_book_11": ("نازلُ الأعماق للموت سعى -محمد الزهيري.pdf", "نازلُ الأعماق للموت سعى"),
+    "send_zuhayri_book_12": ("نسجت لكم بقاني الدم عهدا -محمد الزهيري.pdf", "نسجت لكم بقاني الدم عهدا"),
+    "send_zuhayri_book_13": ("هيهات ينــــزو كافـرٌ - محمد الزهيري.pdf", "هيهات ينــــزو كافـرٌ"),
+    "send_zuhayri_book_14": ("يا دولة التوحيد أينع زرعنا - محمد الزهيري.pdf", "يا دولة التوحيد أينع زرعنا")
+}
+
+@app.on_callback_query(filters.regex("show_zuhayri_books"))
+def show_zuhayri_books(client, callback_query):
+    keyboard = [[InlineKeyboardButton(f"📖 {v[1]}", k)] for k, v in ZUHAYRI_BOOKS_MAP.items()]
+    keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
+    callback_query.message.edit_text("👷 اختر من مؤلفات المهندس محمد الزهيري:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+@app.on_callback_query(filters.regex(r"^send_zuhayri_book_"))
+def send_zuhayri_book(client, callback_query):
+    book_info = ZUHAYRI_BOOKS_MAP.get(callback_query.data)
+    if book_info:
+        file_name, caption = book_info
+        path = os.path.join("قصائد المشروع", "المهندس محمد الزهيري", file_name)
+        send_file(client, callback_query, path, f"📖 {caption}")
+
+# --- قسم بنت نجد ---
+BINT_NAJD_BOOKS_MAP = {
+    "send_bint_najd_book_1": ("أمسِكْ لسانكَ يا قُنيبي.pdf", "أمسِكْ لسانكَ يا قُنيبي"),
+    "send_bint_najd_book_2": ("فرعونُ نجد ستنتهي أيامهُ.pdf", "فرعونُ نجد ستنتهي أيامهُ"),
+    "send_bint_najd_book_3": ("مادحة للعدناني هاجية للجولاني.pdf", "مادحة للعدناني هاجية للجولاني"),
+    "send_bint_najd_book_4": ("هذه دولة الإسلام، ياعشماوي - بنت نجد.pdf", "هذه دولة الإسلام، ياعشماوي")
+}
+
+@app.on_callback_query(filters.regex("show_bint_najd_books"))
+def show_bint_najd_books(client, callback_query):
+    keyboard = [[InlineKeyboardButton(f"✍️ {v[1]}", k)] for k, v in BINT_NAJD_BOOKS_MAP.items()]
+    keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
+    callback_query.message.edit_text("✍️ اختر من مؤلفات بنت نجد:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+@app.on_callback_query(filters.regex(r"^send_bint_najd_book_"))
+def send_bint_najd_book(client, callback_query):
+    book_info = BINT_NAJD_BOOKS_MAP.get(callback_query.data)
+    if book_info:
+        file_name, caption = book_info
+        path = os.path.join("قصائد المشروع", "بنت نجد", file_name)
+        send_file(client, callback_query, path, f"✍️ {caption}")
+
+# --- قسم العقاب المصري ---
+OQAB_MASRI_BOOKS_MAP = {
+    "send_oqab_book_1": ("إلى ابْنَتي مَوَدَّة.pdf", "إلى ابْنَتي مَوَدَّة"),
+    "send_oqab_book_2": ("هنا الخلافة- ديوان شعري العقاب المصري.pdf", "هنا الخلافة - ديوان شعري")
+}
+
+@app.on_callback_query(filters.regex("show_oqab_masri"))
+def show_oqab_masri(client, callback_query):
+    keyboard = [[InlineKeyboardButton(f"🦅 {v[1]}", k)] for k, v in OQAB_MASRI_BOOKS_MAP.items()]
+    keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
+    callback_query.message.edit_text("🦅 اختر من مؤلفات العقاب المصري:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+@app.on_callback_query(filters.regex(r"^send_oqab_book_"))
+def send_oqab_book(client, callback_query):
+    book_info = OQAB_MASRI_BOOKS_MAP.get(callback_query.data)
+    if book_info:
+        file_name, caption = book_info
+        path = os.path.join("قصائد المشروع", "العقاب المصري", file_name)
+        send_file(client, callback_query, path, f"🦅 {caption}")
+
+# --- قسم مرثد بن عبد الله ---
+@app.on_callback_query(filters.regex("show_marthad_abdullah"))
+def show_marthad_abdullah(client, callback_query):
+    path = os.path.join("قصائد المشروع", "مـرثد بن عبد الله", "بعض من قصائد مرثد بن عبد الله.pdf")
+    send_file(client, callback_query, path, "✒️ بعض من قصائد مرثد بن عبد الله")
 
 # --- باقي المؤلفين ---
 @app.on_callback_query(filters.regex("show_abu_khithama"))
@@ -282,9 +366,49 @@ def show_hussein_almadidi(client, callback_query):
     send_file(client, callback_query, path, "⚔️ كتاب: هنا أرض الخلافة (حسين المعاضيدي)")
 
 # --- قسم أحلام النصر ---
-
 AHLAM_ALNASER_BOOKS_MAP = {
-    # Map content is long, so it's omitted for brevity but present in the full code.
+    "send_ahlam_alnaser_book_1": ("أوار الحق/1 الباغوز، ومدرسة الابتلاء!.pdf", "1 الباغوز، ومدرسة الابتلاء!"),
+    "send_ahlam_alnaser_book_2": ("أوار الحق/2 مَن سمح لهم أن يكونوا أبرياء؟!.pdf", "2 مَن سمح لهم أن يكونوا أبرياء؟!"),
+    "send_ahlam_alnaser_book_3": ("أوار الحق/3 يا أهل مصر؛ احذروا الأدوية!.pdf", "3 يا أهل مصر؛ احذروا الأدوية!"),
+    "send_ahlam_alnaser_book_4": ("أوار الحق/4 بل أطعنا الله إذ أحرقناه!.pdf", "4 بل أطعنا الله إذ أحرقناه!"),
+    "send_ahlam_alnaser_book_5": ("أوار الحق/5 دولة المنهج لا دولة الماديات.pdf", "5 دولة المنهج لا دولة الماديات"),
+    "send_ahlam_alnaser_book_6": ("أوار الحق/6 أخطأت يا أم ستيفن!.pdf", "6 أخطأت يا أم ستيفن!"),
+    "send_ahlam_alnaser_book_7": ("أوار الحق/7 عمل المرأة، وكذبة التحرر!.pdf", "7 عمل المرأة، وكذبة التحرر!"),
+    "send_ahlam_alnaser_book_8": ("أوار الحق/8 توضيح لا بد منه.pdf", "8 توضيح لا بد منه"),
+    "send_ahlam_alnaser_book_9": ("أوار الحق/9 أتينا لنبقى.. وإن بلغت القلوب الحناجر!.pdf", "9 أتينا لنبقى.. وإن بلغت القلوب الحناجر!"),
+    "send_ahlam_alnaser_book_10": ("أوار الحق/10 منشورات في التربية.pdf", "10 منشورات في التربية"),
+    "send_ahlam_alnaser_book_11": ("أوار الحق/11 إنَّني بريئةٌ منكَ.pdf", "11 إنَّني بريئةٌ منكَ"),
+    "send_ahlam_alnaser_book_12": ("أوار الحق/12 ديوان أوار الحق لأحلام النصر.pdf", "12 ديوان أوار الحق لأحلام النصر"),
+    "send_ahlam_alnaser_book_13": ("أوار الحق/13 ديوان هدير المعامع لأحلام النصر.pdf", "13 ديوان هدير المعامع لأحلام النصر"),
+    "send_ahlam_alnaser_book_14": ("أوار الحق/14 أفيـون السهولة، لأحلام النصر.pdf", "14 أفيـون السهولة، لأحلام النصر"),
+    "send_ahlam_alnaser_book_15": ("أوار الحق/15 رحلة علم وجهاد؛ سيرة المجاهد أبي أسامة الغريب.pdf", "15 رحلة علم وجهاد؛ سيرة المجاهد أبي أسامة الغريب"),
+    "send_ahlam_alnaser_book_16": ("أوار الحق/16 الغلاة.. وبقرة بني إسرائيل!.pdf", "16 الغلاة.. وبقرة بني إسرائيل!"),
+    "send_ahlam_alnaser_book_17": ("أوار الحق/17 وِجاءُ_الثغور_في_دفع_شرور_الكَفور.pdf", "17 وِجاءُ الثغور في دفع شرور الكَفور"),
+    "send_ahlam_alnaser_book_18": ("أوار الحق/18 ديوان سحابة نقاء، لأحلام النصر.pdf", "18 ديوان سحابة نقاء، لأحلام النصر"),
+    "send_ahlam_alnaser_book_19": ("أوار الحق/19 لا عزة إلا بالجهاد.pdf", "19 لا عزة إلا بالجهاد"),
+    "send_ahlam_alnaser_book_20": ("أوار الحق/20 بدايتي مع الدولة.pdf", "20 بدايتي مع الدولة"),
+    "send_ahlam_alnaser_book_21": ("أوار الحق/21 ربعي بن عامر؛ بين شرعة الله تعالى وشرعة الأمم المتحدة.pdf", "21 ربعي بن عامر؛ بين شرعة الله وشرعة الأمم المتحدة"),
+    "send_ahlam_alnaser_book_22": ("أوار الحق/22 الانتصار.pdf", "22 الانتصار"),
+    "send_ahlam_alnaser_book_23": ("أوار الحق/23 القائدالشهيد أبو طالب السنوار!.pdf", "23 القائدالشهيد أبو طالب السنوار!"),
+    "send_ahlam_alnaser_book_24": ("أوار الحق/24 بيان مؤسسة أوار الحق.pdf", "24 بيان مؤسسة أوار الحق"),
+    "send_ahlam_alnaser_book_25": ("أوار الحق/25 المرجئة_يهود_القبلة.pdf", "25 المرجئة يهود القبلة"),
+    "send_ahlam_alnaser_book_26": ("أوار الحق/26 تناطح البغال في ردغة الخبال.pdf", "26 تناطح البغال في ردغة الخبال"),
+    "send_ahlam_alnaser_book_27": ("أوار الحق/27 طالبان_على_خطى_مرسي_بقلم_أحلام_النصر.pdf", "27 طالبان على خطى مرسي بقلم أحلام النصر"),
+    "send_ahlam_alnaser_book_28": ("أوار الحق/28 ليكون الدين كله لله، بقلم أحلام النصر.pdf", "28 ليكون الدين كله لله، بقلم أحلام النصر"),
+    "send_ahlam_alnaser_book_29": ("أوار الحق/29 الجانب التعليمي، أحلام النصر.pdf", "29 الجانب التعليمي، أحلام النصر"),
+    "send_ahlam_alnaser_book_30": ("أوار الحق/30 أمة الإسناد، لأحلام النصر.pdf", "30 أمة الإسناد، لأحلام النصر"),
+    "send_ahlam_alnaser_book_31_a": ("أوار الحق/31 علام الخذلان؟!.pdf", "31 علام الخذلان؟!"),
+    "send_ahlam_alnaser_book_32": ("أوار الحق/32 فلسطين إلى متى يبقى الخطر آمنا.pdf", "32 فلسطين إلى متى يبقى الخطر آمنا"),
+    "send_ahlam_alnaser_book_اثبت_ولا_تتردد": ("أوار الحق/اثبت_ولا_تتردد،_وبايع_الهزبر_لترشَد (2).pdf", "اثبت ولا تتردد، وبايع الهزبر لترشَد (2)"),
+    "send_ahlam_alnaser_book_الذئاب_المنفردة": ("أوار الحق/الذئاب المنفردة.pdf", "الذئاب المنفردة"),
+    "send_ahlam_alnaser_book_الزرقاوي_كما_صحبته": ("أوار الحق/الزرقاوي_كما_صحبته.pdf", "الزرقاوي كما صحبته"),
+    "send_ahlam_alnaser_book_الموت_الزؤام": ("أوار الحق/الموت_الزؤام_لأعداء_نبي_الإسلام_وشعر_أتجرؤون_بقلم_أحلام_النصر.pdf", "الموت الزؤام لأعداء نبي الإسلام وشعر أتجرؤون"),
+    "send_ahlam_alnaser_book_حرب_دينية": ("أوار الحق/حرب دينية لا تصرفات فردية.pdf", "حرب دينية لا تصرفات فردية"),
+    "send_ahlam_alnaser_book_حكم_المنظومة": ("أوار الحق/حكم المنظومة التعليمية.pdf", "حكم المنظومة التعليمية"),
+    "send_ahlam_alnaser_book_حملة_المناصرة": ("أوار الحق/حملة المناصرة رباط وجهاد.pdf", "حملة المناصرة رباط وجهاد"),
+    "send_ahlam_alnaser_book_لا_يصح": ("أوار الحق/لا يصح إلا الصحيح، والمرتد لن يستريح.pdf", "لا يصح إلا الصحيح، والمرتد لن يستريح"),
+    "send_ahlam_alnaser_book_taysir_altaalim_1": ("أوار الحق/تيسير_التعليم_لمريد_قراءات_القرآن_الكريم_1.pdf", "تيسير التعليم لمريد قراءات القرآن الكريم 1"),
+    "send_ahlam_alnaser_book_kitab_altajweed": ("أوار الحق/كتاب التجويد.pdf", "كتاب التجويد"),
 }
 
 for i in range(1, 36):
@@ -292,10 +416,10 @@ for i in range(1, 36):
 
 @app.on_callback_query(filters.regex("show_ahlam_alnaser_books"))
 def show_ahlam_alnaser_books(client, callback_query):
-    keyboard = [
-        # Button list is long, so it's omitted for brevity but present in the full code.
-    ]
-    callback_query.message.edit_text("🌸 اختر كتاباً لـ أحلام النصر الدمشقية:", reply_markup=InlineKeyboardMarkup(keyboard))
+    keyboard = [[InlineKeyboardButton(v[1], k)] for k, v in AHLAM_ALNASER_BOOKS_MAP.items() if k.startswith("send_ahlam_alnaser_book_")]
+    keyboard.append([InlineKeyboardButton("📚 قصة: عائد من الظلام (كل الأجزاء)", callback_data="show_aed_min_althalam_parts")])
+    keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
+    callback_query.message.edit_text("🌸 اختر من مؤلفات أحلام النصر الدمشقية:", reply_markup=InlineKeyboardMarkup(keyboard))
 
 @app.on_callback_query(filters.regex("show_aed_min_althalam_parts"))
 def show_aed_min_althalam_parts(client, callback_query):
@@ -309,7 +433,7 @@ def send_ahlam_alnaser_specific_book(client, callback_query):
     if book_info:
         file_path, caption = book_info
         full_path = os.path.join("قصائد المشروع", file_path)
-        full_caption = f"{caption} (أحلام النصر الدمشقية)"
+        full_caption = f"🌸 {caption} (أحلام النصر الدمشقية)"
         send_file(client, callback_query, full_path, full_caption)
     else:
         callback_query.answer("❌ حدث خطأ: الكتاب المطلوب غير موجود في القاموس.", show_alert=True)
