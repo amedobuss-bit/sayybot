@@ -75,6 +75,7 @@ def show_archive(client, callback_query):
         [InlineKeyboardButton("📖 أبو أنس الفلسطيني", callback_data="show_abu_anas")],
         [InlineKeyboardButton("📝 مـ يـسـ رة الغـ ريـ ب", callback_data="show_mysara_gharib_books")],
         [InlineKeyboardButton("📜 أبو بـ كـ ر المـ دني", callback_data="show_abu_bakr_madani_books")],
+        [InlineKeyboardButton("⚔️ حسين المعاضيدي", callback_data="show_hussein_almadidi")], # ## التعديل الأول: إضافة الزر الجديد هنا
         [InlineKeyboardButton("🌸 أحلام النصر الدمشقية", callback_data="show_ahlam_alnaser_books")]
     ]
     callback_query.message.edit_text("اختر مجموعة القصائد:", reply_markup=InlineKeyboardMarkup(keyboard))
@@ -156,7 +157,7 @@ def show_mysara_gharib_books(client, callback_query):
 @app.on_callback_query(filters.regex(r"^send_mysara_"))
 def send_mysara_book(client, callback_query):
     book_map = {
-        "send_mysara_ramziyat": ("ميسرة الغريب/رَمْزِيَّات.pdf", "📝 كتاب: رمزيات"), # تم التصحيح
+        "send_mysara_ramziyat": ("ميسرة الغريب/رَمْزِيَّات.pdf", "📝 كتاب: رمزيات"),
         "send_mysara_shifaa_alayi": ("ميسرة الغريب/إنما شفاء العيّ السؤال.pdf", "📝 كتاب: إنما شفاء العي السؤال"),
         "send_mysara_kurab": ("ميسرة الغريب/الكُرَبُ وسُبُلُ تَفْرِيجِها.pdf", "📝 كتاب: الكُرَبُ وسُبُلُ تَفْرِيجِها"),
         "send_mysara_bidmaihim": ("ميسرة الغريب/سلسلة بدمائهم نصحوا 1.. منهج حياة.pdf", "📝 بدمائهم نصحوا1"),
@@ -183,6 +184,12 @@ def send_abu_bakr_madani_laft_alanzar(client, callback_query):
     path = os.path.join("قصائد المشروع", "أبو بكر المدني", "لفت_الأنظار_لما_جاء_في_الفلوجتين_من_أخبار_1.pdf")
     send_file(client, callback_query, path, "📜 كتاب: لفت الأنظار لما جاء في الفلـ وجتين من أخبار1 (أبو بـ كـ ر المـ دني)")
 
+# ## التعديل الثاني: إضافة دالة جديدة للكتاب الجديد
+@app.on_callback_query(filters.regex("show_hussein_almadidi"))
+def show_hussein_almadidi(client, callback_query):
+    path = os.path.join("قصائد المشروع", "حسين المعاضيدي", "هنا أرض الخلافة.pdf")
+    send_file(client, callback_query, path, "⚔️ كتاب: هنا أرض الخلافة (حسين المعاضيدي)")
+
 # --- قسم أحلام النصر ---
 
 AHLAM_ALNASER_BOOKS_MAP = {
@@ -196,7 +203,7 @@ AHLAM_ALNASER_BOOKS_MAP = {
     "send_ahlam_alnaser_book_8": ("أوار الحق/8 توضيح لا بد منه.pdf", "🌸 كتاب: 8 توضيح لا بد منه"),
     "send_ahlam_alnaser_book_9": ("أوار الحق/9 أتينا لنبقى.. وإن بلغت القلوب الحناجر!.pdf", "🌸 كتاب: 9 أتينا لنبقى.."),
     "send_ahlam_alnaser_book_10": ("أوار الحق/10 منشورات في التربية.pdf", "🌸 كتاب: 10 منشورات في التربية"),
-    "send_ahlam_alnaser_book_11": ("أوار الحق/11 إنَّني بريئةٌ منكَ.pdf", "🌸 كتاب: 11 إنَّني بريئةٌ منكَ"), # تم التصحيح
+    "send_ahlam_alnaser_book_11": ("أوار الحق/11 إنَّني بريئةٌ منكَ.pdf", "🌸 كتاب: 11 إنَّني بريئةٌ منكَ"),
     "send_ahlam_alnaser_book_12": ("أوار الحق/12 ديوان أوار الحق لأحلام النصر.pdf", "🌸 كتاب: 12 ديوان أوار الحق"),
     "send_ahlam_alnaser_book_13": ("أوار الحق/13 ديوان هدير المعامع لأحلام النصر.pdf", "🌸 كتاب: 13 ديوان هدير المعامع"),
     "send_ahlam_alnaser_book_14": ("أوار الحق/14 أفيـون السهولة، لأحلام النصر.pdf", "🌸 كتاب: 14 أفيـون السهولة"),
@@ -293,7 +300,7 @@ def show_aed_min_althalam_parts(client, callback_query):
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_ahlam_alnaser_books")])
     callback_query.message.edit_text("📚 قصة: عائد من الظلام - اختر الجزء:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-# تم تعديل هذا السطر ليشمل أجزاء القصة
+# ## التعديل الثالث: التأكد من أن هذه الدالة تشمل كل الأسماء
 @app.on_callback_query(filters.regex(r"^(send_ahlam_alnaser_|send_aed_min_althalam_part_)"))
 def send_ahlam_alnaser_specific_book(client, callback_query):
     book_info = AHLAM_ALNASER_BOOKS_MAP.get(callback_query.data)
