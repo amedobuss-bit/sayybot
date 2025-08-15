@@ -43,31 +43,37 @@ def encrypt_text(text):
 # قراءة الإعدادات من متغيرات البيئة أو ملف config.ini
 def load_config():
     """قراءة إعدادات البوت من متغيرات البيئة أو ملف config.ini"""
-    # أولاً: محاولة قراءة من متغيرات البيئة
-    tg_secret_token = os.environ.get('TG_SECRET_TOKEN')
-    
-    if tg_secret_token:
-        # إذا وجد متغير البيئة، استخدمه
+    # محاولة قراءة من متغيرات البيئة (إذا وجدت)
+    bot_token = os.getenv("TG_BOT_TOKEN")
+    api_id = os.getenv("TG_API_ID")
+    api_hash = os.getenv("TG_API_HASH")
+    secret_token = os.getenv("TG_SECRET_TOKEN", "default-secret-123")
+
+    # إذا وجدت متغيرات البيئة، استخدمها
+    if bot_token and api_id and api_hash:
+        print("✅ تم قراءة الإعدادات من متغيرات البيئة")
         return {
-            'api_id': int(os.environ.get('TG_API_ID', '12345')),  # قيم افتراضية
-            'api_hash': os.environ.get('TG_API_HASH', 'your_api_hash_here'),
-            'bot_token': tg_secret_token
+            "api_id": int(api_id),
+            "api_hash": api_hash,
+            "bot_token": bot_token,
+            "secret_token": secret_token,
         }
-    else:
-        # إذا لم يوجد، اقرأ من ملف config.ini (للاختبار المحلي)
-        try:
-            config = configparser.ConfigParser()
-            config.read('config.ini', encoding='utf-8')
-            
-            return {
-                'api_id': int(config.get('pyrogram', 'api_id')),
-                'api_hash': config.get('pyrogram', 'api_hash'),
-                'bot_token': config.get('pyrogram', 'bot_token')
-            }
-        except Exception as e:
-            print(f"❌ خطأ في قراءة الإعدادات: {e}")
-            print("يرجى إضافة متغيرات البيئة أو التأكد من وجود ملف config.ini")
-            exit(1)
+
+    # وإلا اقرأ من ملف config.ini
+    print("ℹ️ لم يتم العثور على متغيرات البيئة، جاري القراءة من config.ini")
+    try:
+        cfg = configparser.ConfigParser()
+        cfg.read("config.ini", encoding="utf-8")
+        return {
+            "api_id": int(cfg.get("pyrogram", "api_id")),
+            "api_hash": cfg.get("pyrogram", "api_hash"),
+            "bot_token": cfg.get("pyrogram", "bot_token"),
+            "secret_token": cfg.get("webhook", "secret_token", fallback="default-secret-123"),
+        }
+    except Exception as e:
+        print(f"❌ خطأ في قراءة الإعدادات: {e}")
+        print("يرجى التأكد من وجود ملف config.ini أو إضافة متغيرات البيئة")
+        exit(1)
 
 # إعداد Flask لاستقبال Webhook من Telegram
 flask_app = Flask(__name__)
@@ -132,7 +138,7 @@ def send_file(client, callback_query, file_path, caption):
         callback_query.answer(error_msg, show_alert=True)
 
 # --- معالجات الأوامر الرئيسية ---
-@app.on_message(filters.command("start"))
+@bot.on_message(filters.command("start"))
 def start(client, message: Message):
     message.reply_text(
         intro_message,
@@ -141,7 +147,7 @@ def start(client, message: Message):
         ])
     )
 
-@app.on_callback_query(filters.regex("show_archive"))
+@bot.on_callback_query(filters.regex("show_archive"))
 def show_archive(client, callback_query):
     # تم تعديل ترتيب الأزرار فقط في هذا القسم
     keyboard = [
@@ -169,14 +175,14 @@ def show_archive(client, callback_query):
     callback_query.message.edit_text("اختر مجموعة القصائد:", reply_markup=InlineKeyboardMarkup(keyboard))
 
 # --- قسم القصائد النصية ---
-@app.on_callback_query(filters.regex("show_osama_poems"))
+@bot.on_callback_query(filters.regex("show_osama_poems"))
 def show_osama_poems(client, callback_query):
     osama_poems = poems[:10]
     keyboard = [[InlineKeyboardButton(p["title"], callback_data=f"poem_{i}")] for i, p in enumerate(osama_poems)]
     keyboard.append([InlineKeyboardButton("رجوع", callback_data="show_archive")])
     callback_query.message.edit_text(encrypt_text("قائمة القصائد:\n\n(أسامة بن لادن)"), reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex(r"^poem_(\d+)$"))
+@bot.on_callback_query(filters.regex(r"^poem_(\d+)$"))
 def show_poem(client, callback_query):
     idx = int(callback_query.matches[0].group(1))
     if 0 <= idx < len(poems):
@@ -195,7 +201,7 @@ def show_poem(client, callback_query):
 # --- قسم الكتب (ملفات PDF) ---
 
 # --- قسم أبو بلال الحربي ---
-@app.on_callback_query(filters.regex("show_harbi_books"))
+@bot.on_callback_query(filters.regex("show_harbi_books"))
 def show_harbi_books(client, callback_query):
     keyboard = [
         [InlineKeyboardButton("📖 وقفات مع الشيخ المربي", callback_data="send_harbi_pdf_1")],
@@ -206,12 +212,12 @@ def show_harbi_books(client, callback_query):
     ]
     callback_query.message.edit_text("⚔️ اختر من مؤلفات أبي بلال الحربي:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex("send_harbi_pdf_1"))
+@bot.on_callback_query(filters.regex("send_harbi_pdf_1"))
 def send_harbi_pdf_1(client, callback_query):
     path = os.path.join("قصائد المشروع", "أبو بلال الحربي", "وقفات مع الشيخ المربي.pdf")
     send_file(client, callback_query, path, "📖 وقفات مع الشيخ المربي")
 
-@app.on_callback_query(filters.regex("send_harbi_pdf_2"))
+@bot.on_callback_query(filters.regex("send_harbi_pdf_2"))
 def send_harbi_pdf_2(client, callback_query):
     path = os.path.join("قصائد المشروع", "أبو بلال الحربي", "ماذا فعلت بنا يا سعد؟.pdf")
     send_file(client, callback_query, path, "📖 ماذا فعلت بنا يا سعد؟")
@@ -240,13 +246,13 @@ SHAYBAH_ALHAMAD_BOOKS_MAP = {
     "send_shaybah_book_20": ("يـا دارَ سِـرْتَـ الفاتحيـنَ للشيخ شيبة الحمد.pdf", "يـا دارَ سِـرْتَـ الفاتحيـنَ")
 }
 
-@app.on_callback_query(filters.regex("show_shaybah_books"))
+@bot.on_callback_query(filters.regex("show_shaybah_books"))
 def show_shaybah_books(client, callback_query):
     keyboard = [[InlineKeyboardButton(f"📖 {v[1]}", k)] for k, v in SHAYBAH_ALHAMAD_BOOKS_MAP.items()]
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
     callback_query.message.edit_text("✍️ اختر من مؤلفات الشاعر أبـو مـالك شيبـة الحمـد:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex(r"^send_shaybah_book_"))
+@bot.on_callback_query(filters.regex(r"^send_shaybah_book_"))
 def send_shaybah_book(client, callback_query):
     book_info = SHAYBAH_ALHAMAD_BOOKS_MAP.get(callback_query.data)
     if book_info:
@@ -272,13 +278,13 @@ ZUHAYRI_BOOKS_MAP = {
     "send_zuhayri_book_14": ("يا دولة التوحيد أينع زرعنا - محمد الزهيري.pdf", "يا دولة التوحيد أينع زرعنا")
 }
 
-@app.on_callback_query(filters.regex("show_zuhayri_books"))
+@bot.on_callback_query(filters.regex("show_zuhayri_books"))
 def show_zuhayri_books(client, callback_query):
     keyboard = [[InlineKeyboardButton(f"📖 {v[1]}", k)] for k, v in ZUHAYRI_BOOKS_MAP.items()]
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
     callback_query.message.edit_text("👷 اختر من مؤلفات المهندس محمد الزهيري:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex(r"^send_zuhayri_book_"))
+@bot.on_callback_query(filters.regex(r"^send_zuhayri_book_"))
 def send_zuhayri_book(client, callback_query):
     book_info = ZUHAYRI_BOOKS_MAP.get(callback_query.data)
     if book_info:
@@ -520,20 +526,20 @@ AHLAM_ALNASER_BOOKS_MAP = {
 for i in range(1, 36):
     AHLAM_ALNASER_BOOKS_MAP[f"send_aed_min_althalam_part_{i}"] = (os.path.join("أوار الحق", "أجزاء قصة عائد من الظلام", f"AMT-E{i}.pdf"), f"🌸 قصة: عائد من الظلام - الجزء {i}")
 
-@app.on_callback_query(filters.regex("show_ahlam_alnaser_books"))
+@bot.on_callback_query(filters.regex("show_ahlam_alnaser_books"))
 def show_ahlam_alnaser_books(client, callback_query):
     keyboard = [[InlineKeyboardButton(v[1], k)] for k, v in AHLAM_ALNASER_BOOKS_MAP.items() if k.startswith("send_ahlam_alnaser_book_")]
     keyboard.append([InlineKeyboardButton("📚 قصة: عائد من الظلام (كل الأجزاء)", callback_data="show_aed_min_althalam_parts")])
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
     callback_query.message.edit_text("🌸 اختر من مؤلفات أحلام النصر الدمشقية:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex("show_aed_min_althalam_parts"))
+@bot.on_callback_query(filters.regex("show_aed_min_althalam_parts"))
 def show_aed_min_althalam_parts(client, callback_query):
     keyboard = [[InlineKeyboardButton(f"الجزء {i}", callback_data=f"send_aed_min_althalam_part_{i}")] for i in range(1, 36)]
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_ahlam_alnaser_books")])
     callback_query.message.edit_text("📚 قصة: عائد من الظلام - اختر الجزء:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex(r"^(send_ahlam_alnaser_|send_aed_min_althalam_part_)"))
+@bot.on_callback_query(filters.regex(r"^(send_ahlam_alnaser_|send_aed_min_althalam_part_)"))
 def send_ahlam_alnaser_specific_book(client, callback_query):
     book_info = AHLAM_ALNASER_BOOKS_MAP.get(callback_query.data)
     if book_info:
@@ -550,12 +556,14 @@ def set_webhook():
     """تسجيل عنوان Webhook مع Telegram"""
     try:
         webhook_url = WEBHOOK_URL  # استخدام المتغير المعرف مسبقاً
+        secret = bot_config["secret_token"]   # من load_config أعلاه
         response = requests.post(
             f"https://api.telegram.org/bot{bot_config['bot_token']}/setWebhook",
-            json={"url": webhook_url}
+            json={"url": webhook_url, "secret_token": secret}
         )
         if response.status_code == 200:
             print(f"✅ تم تسجيل Webhook بنجاح: {webhook_url}")
+            print(f"🔐 مع السيكرت: {secret}")
         else:
             print(f"❌ فشل في تسجيل Webhook: {response.text}")
     except Exception as e:
@@ -565,25 +573,8 @@ def set_webhook():
 def process_update(update_data):
     """معالجة الرسائل الواردة من Telegram Webhook"""
     try:
-        update = Update(**update_data)
-        
-        # معالجة الرسائل النصية
-        if update.message:
-            message = update.message
-            if message.text and message.text.startswith('/start'):
-                # معالجة أمر /start
-                message.reply_text(
-                    intro_message,
-                    reply_markup=InlineKeyboardMarkup([
-                        [InlineKeyboardButton("انتقل إلى مادة الأرشيف", callback_data="show_archive")]
-                    ])
-                )
-        
-        # معالجة Callback Queries
-        elif update.callback_query:
-            callback_query = update.callback_query
-            # هنا يمكن إضافة معالجة Callback Queries حسب الحاجة
-            
+        # استخدام bot.process_updates بدلاً من بناء Update يدوياً
+        bot.process_updates([update_data])
     except Exception as e:
         print(f"❌ خطأ في معالجة الرسالة: {e}")
 
@@ -592,12 +583,17 @@ def process_update(update_data):
 def webhook():
     """نقطة نهاية لاستقبال Webhook من Telegram"""
     try:
-        update_data = request.get_json()
+        # التحقق من الهيدر الأمني
+        if request.headers.get("X-Telegram-Bot-Api-Secret-Token") != bot_config["secret_token"]:
+            print("❌ فشل في التحقق من السيكرت")
+            return "Unauthorized", 401
+        
+        update_data = request.get_json(force=True, silent=True) or {}
         process_update(update_data)
-        return jsonify({"status": "ok"})
+        return "OK", 200
     except Exception as e:
         print(f"❌ خطأ في Webhook: {e}")
-        return jsonify({"status": "error", "message": str(e)}), 500
+        return "Internal Server Error", 500
 
 # نقطة نهاية للتحقق من حالة البوت
 @flask_app.route('/')
