@@ -5,6 +5,7 @@ import json
 import os
 import io
 import random
+import configparser
 
 # دالة تشفير النصوص لتجاوز خوارزمية تلغرام
 def encrypt_text(text):
@@ -27,13 +28,31 @@ def encrypt_text(text):
     
     return encrypted
 
-# إعداد الاتصال بالبوت باستخدام المتغيرات البيئية
-app = Client(
-    "safe_poetry_bot",
-    api_id=int(os.environ.get("API_ID")),
-    api_hash=os.environ.get("API_HASH"),
-    bot_token=os.environ.get("BOT_TOKEN")
-)
+# قراءة الإعدادات من ملف config.ini
+def load_config():
+    """قراءة إعدادات البوت من ملف config.ini"""
+    config = configparser.ConfigParser()
+    config.read('config.ini', encoding='utf-8')
+    
+    return {
+        'api_id': int(config.get('pyrogram', 'api_id')),
+        'api_hash': config.get('pyrogram', 'api_hash'),
+        'bot_token': config.get('pyrogram', 'bot_token')
+    }
+
+# إعداد الاتصال بالبوت باستخدام ملف config.ini
+try:
+    bot_config = load_config()
+    app = Client(
+        "safe_poetry_bot",
+        api_id=bot_config['api_id'],
+        api_hash=bot_config['api_hash'],
+        bot_token=bot_config['bot_token']
+    )
+except Exception as e:
+    print(f"❌ خطأ في قراءة ملف config.ini: {e}")
+    print("يرجى التأكد من وجود الملف وصحة البيانات")
+    exit(1)
 
 # 💬 رسالة الترحيب
 intro_message = encrypt_text(

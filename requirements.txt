@@ -1,2 +1,6 @@
-pyrogram
-tgcrypto
+# Telegram Bot Dependencies
+pyrogram>=2.0.0
+tgcrypto>=1.2.5
+
+# Standard Library (usually included with Python)
+# json, os, io, random, configparser
