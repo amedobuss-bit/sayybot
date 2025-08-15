@@ -2,5 +2,9 @@
 pyrogram>=2.0.0
 tgcrypto>=1.2.5
 
+# Web Framework for Webhook
+Flask>=2.0.0
+requests>=2.25.0
+
 # Standard Library (usually included with Python)
 # json, os, io, random, configparser

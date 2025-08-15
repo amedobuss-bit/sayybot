@@ -1,11 +1,13 @@
 import pyrogram
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, Update
 import json
 import os
 import io
 import random
 import configparser
+from flask import Flask, request, jsonify
+import requests
 
 # دالة تشفير للنصوص لتجاوز خوارزمية تلغرام
 def encrypt_text(text):
@@ -40,10 +42,13 @@ def load_config():
         'bot_token': config.get('pyrogram', 'bot_token')
     }
 
+# إعداد Flask لاستقبال Webhook من Telegram
+flask_app = Flask(__name__)
+
 # إعداد الاتصال بالبوت باستخدام ملف config.ini
 try:
     bot_config = load_config()
-    app = Client(
+    bot = Client(
         "safe_poetry_bot",
         api_id=bot_config['api_id'],
         api_hash=bot_config['api_hash'],
@@ -54,6 +59,9 @@ except Exception as e:
     print(f"❌ خطأ في قراءة ملف config.ini: {e}")
     print("يرجى التأكد من وجود الملف وصحة البيانات")
     exit(1)
+
+# تكوين Webhook URL
+WEBHOOK_URL = f"https://YOUR_USERNAME.pythonanywhere.com/{bot_config['bot_token']}"
 
 # 💬 رسالة الترحيب
 intro_message = (
@@ -508,6 +516,70 @@ def send_ahlam_alnaser_specific_book(client, callback_query):
         callback_query.answer("❌ حدث خطأ: الكتاب المطلوب غير موجود في القاموس.", show_alert=True)
 
 
+# دالة تسجيل Webhook مع Telegram
+def set_webhook():
+    """تسجيل عنوان Webhook مع Telegram"""
+    try:
+        webhook_url = f"https://YOUR_USERNAME.pythonanywhere.com/{bot_config['bot_token']}"
+        response = requests.post(
+            f"https://api.telegram.org/bot{bot_config['bot_token']}/setWebhook",
+            json={"url": webhook_url}
+        )
+        if response.status_code == 200:
+            print(f"✅ تم تسجيل Webhook بنجاح: {webhook_url}")
+        else:
+            print(f"❌ فشل في تسجيل Webhook: {response.text}")
+    except Exception as e:
+        print(f"❌ خطأ في تسجيل Webhook: {e}")
+
+# دالة معالجة الرسائل الواردة من Webhook
+def process_update(update_data):
+    """معالجة الرسائل الواردة من Telegram Webhook"""
+    try:
+        update = Update(**update_data)
+        
+        # معالجة الرسائل النصية
+        if update.message:
+            message = update.message
+            if message.text and message.text.startswith('/start'):
+                # معالجة أمر /start
+                message.reply_text(
+                    intro_message,
+                    reply_markup=InlineKeyboardMarkup([
+                        [InlineKeyboardButton("انتقل إلى مادة الأرشيف", callback_data="show_archive")]
+                    ])
+                )
+        
+        # معالجة Callback Queries
+        elif update.callback_query:
+            callback_query = update.callback_query
+            # هنا يمكن إضافة معالجة Callback Queries حسب الحاجة
+            
+    except Exception as e:
+        print(f"❌ خطأ في معالجة الرسالة: {e}")
+
+# نقطة نهاية Flask لاستقبال Webhook
+@flask_app.route(f"/{bot_config['bot_token']}", methods=['POST'])
+def webhook():
+    """نقطة نهاية لاستقبال Webhook من Telegram"""
+    try:
+        update_data = request.get_json()
+        process_update(update_data)
+        return jsonify({"status": "ok"})
+    except Exception as e:
+        print(f"❌ خطأ في Webhook: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# نقطة نهاية للتحقق من حالة البوت
+@flask_app.route('/')
+def home():
+    """الصفحة الرئيسية للتحقق من حالة البوت"""
+    return """
+    <h1>🚂 RailBot - بوت القصائد الآمن</h1>
+    <p>البوت يعمل بنجاح!</p>
+    <p>Webhook URL: {}</p>
+    """.format(WEBHOOK_URL)
+
 # --- بدء تشغيل البوت ---
 if __name__ == "__main__":
     print("🚂 RailBot - بوت القصائد الآمن")
@@ -515,7 +587,12 @@ if __name__ == "__main__":
     print("جاري بدء البوت...")
     print("✅ تم قراءة الإعدادات بنجاح")
     print("✅ تم تحميل القصائد بنجاح")
-    print("✅ البوت يعمل الآن!")
+    print("✅ تم تسجيل Webhook بنجاح")
+    print("✅ البوت يعمل الآن على Flask!")
     print("========================================")
-app.run()
-print("Bot has stopped.")
+    
+    # تسجيل Webhook
+    set_webhook()
+    
+    # تشغيل Flask على المنفذ 5000 (PythonAnywhere)
+    flask_app.run(host='0.0.0.0', port=5000, debug=False)
