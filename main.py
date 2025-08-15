@@ -9,6 +9,16 @@ import configparser
 from flask import Flask, request, jsonify
 import requests
 
+# ========================================
+# 🚂 RailBot - بوت القصائد الآمن
+# ========================================
+# 
+# هذا البوت مصمم للعمل على PythonAnywhere
+# يمكن تشغيله بطريقتين:
+# 1. باستخدام متغيرات البيئة (مفضل للإنتاج)
+# 2. باستخدام ملف config.ini (للاختبار المحلي)
+# ========================================
+
 # دالة تشفير للنصوص لتجاوز خوارزمية تلغرام
 def encrypt_text(text):
     """
@@ -30,17 +40,34 @@ def encrypt_text(text):
     
     return encrypted
 
-# قراءة الإعدادات من ملف config.ini
+# قراءة الإعدادات من متغيرات البيئة أو ملف config.ini
 def load_config():
-    """قراءة إعدادات البوت من ملف config.ini"""
-    config = configparser.ConfigParser()
-    config.read('config.ini', encoding='utf-8')
+    """قراءة إعدادات البوت من متغيرات البيئة أو ملف config.ini"""
+    # أولاً: محاولة قراءة من متغيرات البيئة
+    tg_secret_token = os.environ.get('TG_SECRET_TOKEN')
     
-    return {
-        'api_id': int(config.get('pyrogram', 'api_id')),
-        'api_hash': config.get('pyrogram', 'api_hash'),
-        'bot_token': config.get('pyrogram', 'bot_token')
-    }
+    if tg_secret_token:
+        # إذا وجد متغير البيئة، استخدمه
+        return {
+            'api_id': int(os.environ.get('TG_API_ID', '12345')),  # قيم افتراضية
+            'api_hash': os.environ.get('TG_API_HASH', 'your_api_hash_here'),
+            'bot_token': tg_secret_token
+        }
+    else:
+        # إذا لم يوجد، اقرأ من ملف config.ini (للاختبار المحلي)
+        try:
+            config = configparser.ConfigParser()
+            config.read('config.ini', encoding='utf-8')
+            
+            return {
+                'api_id': int(config.get('pyrogram', 'api_id')),
+                'api_hash': config.get('pyrogram', 'api_hash'),
+                'bot_token': config.get('pyrogram', 'bot_token')
+            }
+        except Exception as e:
+            print(f"❌ خطأ في قراءة الإعدادات: {e}")
+            print("يرجى إضافة متغيرات البيئة أو التأكد من وجود ملف config.ini")
+            exit(1)
 
 # إعداد Flask لاستقبال Webhook من Telegram
 flask_app = Flask(__name__)
@@ -61,7 +88,9 @@ except Exception as e:
     exit(1)
 
 # تكوين Webhook URL
-WEBHOOK_URL = f"https://YOUR_USERNAME.pythonanywhere.com/{bot_config['bot_token']}"
+# يمكن استخدام متغير البيئة TG_WEBHOOK_URL أو إنشاؤه تلقائياً
+webhook_base = os.environ.get('TG_WEBHOOK_URL', f"https://ahmrabaee.pythonanywhere.com")
+WEBHOOK_URL = f"{webhook_base}/{bot_config['bot_token']}"
 
 # 💬 رسالة الترحيب
 intro_message = (
@@ -520,7 +549,7 @@ def send_ahlam_alnaser_specific_book(client, callback_query):
 def set_webhook():
     """تسجيل عنوان Webhook مع Telegram"""
     try:
-        webhook_url = f"https://YOUR_USERNAME.pythonanywhere.com/{bot_config['bot_token']}"
+        webhook_url = WEBHOOK_URL  # استخدام المتغير المعرف مسبقاً
         response = requests.post(
             f"https://api.telegram.org/bot{bot_config['bot_token']}/setWebhook",
             json={"url": webhook_url}
