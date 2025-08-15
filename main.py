@@ -88,6 +88,7 @@ try:
         bot_token=bot_config['bot_token'],
         in_memory=True
     )
+    bot.start()  # مهم جداً مع الـ webhook
 except Exception as e:
     print(f"❌ خطأ في قراءة ملف config.ini: {e}")
     print("يرجى التأكد من وجود الملف وصحة البيانات")
@@ -97,6 +98,9 @@ except Exception as e:
 # يمكن استخدام متغير البيئة TG_WEBHOOK_URL أو إنشاؤه تلقائياً
 webhook_base = os.environ.get('TG_WEBHOOK_URL', f"https://ahmrabaee.pythonanywhere.com")
 WEBHOOK_URL = f"{webhook_base}/{bot_config['bot_token']}"
+
+# تعريف توكن البوت للاستخدام المباشر
+BOT_TOKEN = bot_config['bot_token']
 
 # 💬 رسالة الترحيب
 intro_message = (
@@ -579,21 +583,65 @@ def process_update(update_data):
         print(f"❌ خطأ في معالجة الرسالة: {e}")
 
 # نقطة نهاية Flask لاستقبال Webhook
-@flask_app.route(f"/{bot_config['bot_token']}", methods=['POST'])
+# معالج مباشر بدون Pyrogram - أسرع وأبسط
+@flask_app.route(f"/{BOT_TOKEN}", methods=['POST'])
 def webhook():
-    """نقطة نهاية لاستقبال Webhook من Telegram"""
+    """نقطة نهاية لاستقبال Webhook من Telegram - معالج مباشر"""
     try:
-        # التحقق من الهيدر الأمني
-        if request.headers.get("X-Telegram-Bot-Api-Secret-Token") != bot_config["secret_token"]:
+        data = request.get_json(force=True)  # JSON من تيليجرام
+
+        # تحقّق من التوكن السرّي (اختياري لكنه مفيد)
+        sec = request.headers.get('X-Telegram-Bot-Api-Secret-Token', '')
+        expected = bot_config.get('secret_token', '')
+        if expected and sec != expected:
+            # طلب مش من تيليجرام أو التوكن غلط
             print("❌ فشل في التحقق من السيكرت")
-            return "Unauthorized", 401
-        
-        update_data = request.get_json(force=True, silent=True) or {}
-        process_update(update_data)
-        return "OK", 200
+            return jsonify({"status": "forbidden"}), 403
+
+        msg = data.get("message") or {}
+        chat = (msg.get("chat") or {}).get("id")
+        text = msg.get("text", "")
+
+        if chat and text and text.startswith("/start"):
+            # رسالة ترحيب مع أزرار
+            keyboard = {
+                "inline_keyboard": [
+                    [{"text": "انتقل إلى مادة الأرشيف", "callback_data": "show_archive"}]
+                ]
+            }
+            
+            requests.post(
+                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                json={
+                    "chat_id": chat, 
+                    "text": "أهلًا! البوت شغّال عبر Webhook على PythonAnywhere ✅\n\nاختر من القائمة:",
+                    "reply_markup": keyboard
+                }
+            )
+            print(f"✅ تم الرد على /start في chat_id: {chat}")
+
+        # معالجة Callback Queries
+        elif data.get("callback_query"):
+            callback_query = data["callback_query"]
+            callback_chat_id = callback_query["message"]["chat"]["id"]
+            callback_data = callback_query.get("data", "")
+            
+            if callback_data == "show_archive":
+                # إرسال قائمة الأرشيف
+                archive_text = "اختر مجموعة القصائد:\n\n• أسامة بن لادن\n• أبو حمزة المهاجر\n• أبو أنس الفلسطيني\n• ميسرة الغريب\n• وأخرون..."
+                
+                requests.post(
+                    f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                    json={"chat_id": callback_chat_id, "text": archive_text}
+                )
+                print(f"✅ تم إرسال الأرشيف في chat_id: {callback_chat_id}")
+
+        # ممكن تضيف ردود أخرى هنا حسب حاجتك…
+
+        return jsonify({"status": "ok"})
     except Exception as e:
-        print(f"❌ خطأ في Webhook: {e}")
-        return "Internal Server Error", 500
+        print(f"[WEBHOOK ERROR] {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 # نقطة نهاية للتحقق من حالة البوت
 @flask_app.route('/')
