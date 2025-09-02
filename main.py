@@ -304,13 +304,13 @@ BINT_NAJD_BOOKS_MAP = {
     "send_bint_najd_book_4": ("هذه دولة الإسلام، ياعشماوي - بنت نجد.pdf", "هذه دولة الإسلام، ياعشماوي")
 }
 
-@app.on_callback_query(filters.regex("show_bint_najd_books"))
+@bot.on_callback_query(filters.regex("show_bint_najd_books"))
 def show_bint_najd_books(client, callback_query):
     keyboard = [[InlineKeyboardButton(f"✍️ {v[1]}", k)] for k, v in BINT_NAJD_BOOKS_MAP.items()]
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
     callback_query.message.edit_text("✍️ اختر من مؤلفات بنت نجد:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex(r"^send_bint_najd_book_"))
+@bot.on_callback_query(filters.regex(r"^send_bint_najd_book_"))
 def send_bint_najd_book(client, callback_query):
     book_info = BINT_NAJD_BOOKS_MAP.get(callback_query.data)
     if book_info:
@@ -324,13 +324,13 @@ OQAB_MASRI_BOOKS_MAP = {
     "send_oqab_book_2": ("هنا الخلافة- ديوان شعري العقاب المصري.pdf", "هنا الخلافة - ديوان شعري")
 }
 
-@app.on_callback_query(filters.regex("show_oqab_masri"))
+@bot.on_callback_query(filters.regex("show_oqab_masri"))
 def show_oqab_masri(client, callback_query):
     keyboard = [[InlineKeyboardButton(f"🦅 {v[1]}", k)] for k, v in OQAB_MASRI_BOOKS_MAP.items()]
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
     callback_query.message.edit_text("🦅 اختر من مؤلفات العقاب المصري:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex(r"^send_oqab_book_"))
+@bot.on_callback_query(filters.regex(r"^send_oqab_book_"))
 def send_oqab_book(client, callback_query):
     book_info = OQAB_MASRI_BOOKS_MAP.get(callback_query.data)
     if book_info:
@@ -339,23 +339,23 @@ def send_oqab_book(client, callback_query):
         send_file(client, callback_query, path, f"🦅 {caption}")
 
 # --- قسم مرثد بن عبد الله ---
-@app.on_callback_query(filters.regex("show_marthad_abdullah"))
+@bot.on_callback_query(filters.regex("show_marthad_abdullah"))
 def show_marthad_abdullah(client, callback_query):
     path = os.path.join("قصائد المشروع", "مـرثد بن عبد الله", "بعض من قصائد مرثد بن عبد الله.pdf")
     send_file(client, callback_query, path, "✒️ بعض من قصائد مرثد بن عبد الله")
 
 # --- باقي المؤلفين ---
-@app.on_callback_query(filters.regex("show_abu_khithama"))
+@bot.on_callback_query(filters.regex("show_abu_khithama"))
 def show_abu_khithama(client, callback_query):
     path = os.path.join("قصائد المشروع", "قصائد دبجت بالدماء.pdf")
     send_file(client, callback_query, path, "📘 ديوان الشاعر أبو خيثمة الشنقيطي")
 
-@app.on_callback_query(filters.regex("show_louis"))
+@bot.on_callback_query(filters.regex("show_louis"))
 def show_louis(client, callback_query):
     path = os.path.join("قصائد المشروع", "لويس_مقالات.pdf")
     send_file(client, callback_query, path, "📗 مجموعة مقالات لويس عطية الله")
 
-@app.on_callback_query(filters.regex("show_adnani_books"))
+@bot.on_callback_query(filters.regex("show_adnani_books"))
 def show_adnani_books(client, callback_query):
     keyboard = [
         [InlineKeyboardButton("📖 الجامع لكلمات العدناني", callback_data="send_adnani_aljami")],
@@ -365,17 +365,17 @@ def show_adnani_books(client, callback_query):
     ]
     callback_query.message.edit_text("🎙️ اختر من مؤلفات العدناني:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex("send_adnani_aljami"))
+@bot.on_callback_query(filters.regex("send_adnani_aljami"))
 def send_adnani_aljami(client, callback_query):
     path = os.path.join("قصائد المشروع", "العدناني", "الجامع للعدناني.pdf")
     send_file(client, callback_query, path, "📖 الجامع لكلمات العدناني")
 
-@app.on_callback_query(filters.regex("send_adnani_qasida"))
+@bot.on_callback_query(filters.regex("send_adnani_qasida"))
 def send_adnani_qasida(client, callback_query):
     path = os.path.join("قصائد المشروع", "العدناني", "قصيدة معركة الفلوجة الثانية.pdf")
     send_file(client, callback_query, path, "📜 قصيدة معركة الفلوجة الثانية")
 
-@app.on_callback_query(filters.regex("show_muhajir_books"))
+@bot.on_callback_query(filters.regex("show_muhajir_books"))
 def show_muhajir_books(client, callback_query):
     keyboard = [
         [InlineKeyboardButton("📚 الجامع لكلمات أبي الحسن المهاجر", callback_data="send_muhajir_aljami")],
@@ -385,12 +385,12 @@ def show_muhajir_books(client, callback_query):
     ]
     callback_query.message.edit_text("✍️ اختر من مؤلفات أبي الحسن المهاجر:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex("send_muhajir_aljami"))
+@bot.on_callback_query(filters.regex("send_muhajir_aljami"))
 def send_muhajir_aljami(client, callback_query):
     path = os.path.join("قصائد المشروع", "أبو الحسن المهاجر", "الجامع لكلمات أبي الحسن المهاجر.pdf")
     send_file(client, callback_query, path, "📚 الجامع لكلمات أبي الحسن المهاجر")
 
-@app.on_callback_query(filters.regex("show_abu_omar_books"))
+@bot.on_callback_query(filters.regex("show_abu_omar_books"))
 def show_abu_omar_books(client, callback_query):
     keyboard = [
         [InlineKeyboardButton("📜 قصيدة: لم يبق للدمع", callback_data="poem_13")],
@@ -404,12 +404,12 @@ def show_abu_omar_books(client, callback_query):
     ]
     callback_query.message.edit_text("👤 اختر من مؤلفات أبي عمر المهاجر:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex("show_qurashi_books"))
+@bot.on_callback_query(filters.regex("show_qurashi_books"))
 def show_qurashi_books(client, callback_query):
     path = os.path.join("قصائد المشروع", "أبو حمزة القرشي", "الجامع لكلمات أبي حمزة القرشي.pdf")
     send_file(client, callback_query, path, "🗣️ الجامع لكلمات أبي حمزة القرشي")
 
-@app.on_callback_query(filters.regex("show_abu_hamza_books"))
+@bot.on_callback_query(filters.regex("show_abu_hamza_books"))
 def show_abu_hamza_books(client, callback_query):
     keyboard = [
         [InlineKeyboardButton("📚 ديوان هموم وآلام", callback_data="send_abu_hamza_homoom_w_alam")],
@@ -418,22 +418,22 @@ def show_abu_hamza_books(client, callback_query):
     ]
     callback_query.message.edit_text("📚 اختر كتاباً لـ أبو حـ ـمـ ـزة المـ ـهـ ـاجـ ـر:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex("send_abu_hamza_homoom_w_alam"))
+@bot.on_callback_query(filters.regex("send_abu_hamza_homoom_w_alam"))
 def send_abu_hamza_homoom_w_alam(client, callback_query):
     path = os.path.join("قصائد المشروع", "هموم وآلام أبو حمزة.pdf")
     send_file(client, callback_query, path, "📚 ديوان هموم وآلام (أبو حـ ـمـ ـزة المـ ـهـ ـاجـ ـر)")
 
-@app.on_callback_query(filters.regex("send_abu_hamza_seir_alam_shohada"))
+@bot.on_callback_query(filters.regex("send_abu_hamza_seir_alam_shohada"))
 def send_abu_hamza_seir_alam_shohada(client, callback_query):
     path = os.path.join("قصائد المشروع", "سير-أعلام-الشُّهداء-1.pdf")
     send_file(client, callback_query, path, "📖 كتاب: سير أعلام الشـ هـ داء (أبو حـ ـمـ ـزة المـ ـهـ ـاجـ ـر)")
 
-@app.on_callback_query(filters.regex("show_abu_anas"))
+@bot.on_callback_query(filters.regex("show_abu_anas"))
 def show_abu_anas(client, callback_query):
     path = os.path.join("قصائد المشروع", "يوميات مجاهد من الفلوجة.pdf")
     send_file(client, callback_query, path, "📖 كتاب يوميات مـ ـجـ ـاهـ ـد من الفـ ـلـ ـوجـ ـة (أبو أنس الفلسطيني)")
 
-@app.on_callback_query(filters.regex("show_mysara_gharib_books"))
+@bot.on_callback_query(filters.regex("show_mysara_gharib_books"))
 def show_mysara_gharib_books(client, callback_query):
     keyboard = [
         [InlineKeyboardButton("كتاب: رمزيات", callback_data="send_mysara_ramziyat")],
@@ -446,7 +446,7 @@ def show_mysara_gharib_books(client, callback_query):
     ]
     callback_query.message.edit_text("📝 اختر كتاباً لـ مـ يـسـ رة الغـ ريـ ب:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex(r"^send_mysara_"))
+@bot.on_callback_query(filters.regex(r"^send_mysara_"))
 def send_mysara_book(client, callback_query):
     book_map = {
         "send_mysara_ramziyat": ("ميسرة الغريب/رَمْزِيَّات.pdf", "📝 كتاب: رمزيات"),
@@ -463,7 +463,7 @@ def send_mysara_book(client, callback_query):
         full_caption = f"{caption} (مـ يـسـ رة الغـ ريـ ب)"
         send_file(client, callback_query, full_path, full_caption)
 
-@app.on_callback_query(filters.regex("show_abu_bakr_madani_books"))
+@bot.on_callback_query(filters.regex("show_abu_bakr_madani_books"))
 def show_abu_bakr_madani_books(client, callback_query):
     keyboard = [
         [InlineKeyboardButton("لفت الأنظار لما جاء في الفلـ وجتين من أخبار1", callback_data="send_abu_bakr_madani_laft_alanzar")],
@@ -471,12 +471,12 @@ def show_abu_bakr_madani_books(client, callback_query):
     ]
     callback_query.message.edit_text("📜 اختر كتاباً لـ أبو بـ كـ ر المـ دني:", reply_markup=InlineKeyboardMarkup(keyboard))
 
-@app.on_callback_query(filters.regex("send_abu_bakr_madani_laft_alanzar"))
+@bot.on_callback_query(filters.regex("send_abu_bakr_madani_laft_alanzar"))
 def send_abu_bakr_madani_laft_alanzar(client, callback_query):
     path = os.path.join("قصائد المشروع", "أبو بكر المدني", "لفت_الأنظار_لما_جاء_في_الفلوجتين_من_أخبار_1.pdf")
     send_file(client, callback_query, path, "📜 كتاب: لفت الأنظار لما جاء في الفلـ وجتين من أخبار1 (أبو بـ كـ ر المـ دني)")
 
-@app.on_callback_query(filters.regex("show_hussein_almadidi"))
+@bot.on_callback_query(filters.regex("show_hussein_almadidi"))
 def show_hussein_almadidi(client, callback_query):
     path = os.path.join("قصائد المشروع", "حسين المعاضيدي", "هنا أرض الخلافة- حسين المعاضيدي.pdf")
     send_file(client, callback_query, path, "⚔️ كتاب: هنا أرض الخلافة (حسين المعاضيدي)")
