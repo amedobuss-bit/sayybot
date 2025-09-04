@@ -111,15 +111,21 @@ intro_message = (
 )
 
 # 📝 تحميل القصائد من ملف خارجي
-try:
-    with open("poems.json", "r", encoding="utf-8") as f:
-        poems = json.load(f)
-except FileNotFoundError:
-    print("Error: poems.json file not found.")
-    poems = []
-except json.JSONDecodeError:
-    print("Error: Could not decode poems.json.")
-    poems = []
+def load_poems():
+    try:
+        with open("poems.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print("Error: poems.json file not found.")
+        return []
+    except json.JSONDecodeError:
+        print("Error: Could not decode poems.json.")
+        return []
+    except Exception as e:
+        print(f"Error loading poems: {e}")
+        return []
+
+poems = load_poems()
 
 # --- دالة مركزية لإرسال الملفات ---
 def send_file(client, callback_query, file_path, caption):
@@ -181,59 +187,68 @@ def show_archive(client, callback_query):
 # --- قسم القصائد النصية ---
 @bot.on_callback_query(filters.regex("show_osama_poems"))
 def show_osama_poems(client, callback_query):
+    # تحميل القصائد ديناميكياً
+    current_poems = load_poems()
     # عرض قصائد أسامة بن لادن فقط
-    osama_poems = [p for p in poems if p.get("author") == "أسامة بن لادن"]
+    osama_poems = [p for p in current_poems if p.get("author") == "أسامة بن لادن"]
     keyboard = []
     
     # إضافة القصائد مع تحسين العرض
     for i, poem in enumerate(osama_poems):
         title = poem.get("title", f"قصيدة {i+1}")
-        keyboard.append([InlineKeyboardButton(f"📜 {title}", callback_data=f"poem_{poems.index(poem)}")])
+        keyboard.append([InlineKeyboardButton(f"📜 {title}", callback_data=f"poem_{current_poems.index(poem)}")])
     
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
     
     # إضافة عدد القصائد في الرسالة مع تشخيص إضافي
     poem_count = len(osama_poems)
-    total_poems = len(poems)
+    total_poems = len(current_poems)
     callback_query.message.edit_text(encrypt_text(f"قائمة القصائد:\n\n(أسامة بن لادن)\n\nعدد القصائد: {poem_count}\nإجمالي القصائد في الملف: {total_poems}"), reply_markup=InlineKeyboardMarkup(keyboard))
 
 @bot.on_callback_query(filters.regex(r"^poem_(\d+)$"))
 def show_poem(client, callback_query):
-    idx = int(callback_query.matches[0].group(1))
-    if 0 <= idx < len(poems):
-        poem = poems[idx]
-        author = poem.get("author", "غير محدد")
-        
-        # تحديد زر الرجوع حسب المؤلف
-        return_callback = "show_archive"
-        if author == "أسامة بن لادن":
-            return_callback = "show_osama_poems"
-        elif author == "العدنان":
-            return_callback = "show_adnani_books"
-        elif author == "أبو الحسن المهاجر":
-            return_callback = "show_muhajir_books"
-        elif author == "أبو عمر المهاجر":
-            return_callback = "show_abu_omar_books"
-        elif author == "أبو بلال الحربي":
-            return_callback = "show_harbi_books"
-        
-        callback_query.message.edit_text(f"📖 **{poem['title']}**\n\n---\n\n{poem['content']}\n\n✍️ {author}", reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ رجوع", callback_data=return_callback)]]))
-    else:
-        callback_query.answer("عذراً، القصيدة المطلوبة غير موجودة.", show_alert=True)
+    try:
+        # تحميل القصائد ديناميكياً
+        current_poems = load_poems()
+        idx = int(callback_query.matches[0].group(1))
+        if 0 <= idx < len(current_poems):
+            poem = current_poems[idx]
+            author = poem.get("author", "غير محدد")
+            
+            # تحديد زر الرجوع حسب المؤلف
+            return_callback = "show_archive"
+            if author == "أسامة بن لادن":
+                return_callback = "show_osama_poems"
+            elif author == "العدنان":
+                return_callback = "show_adnani_books"
+            elif author == "أبو الحسن المهاجر":
+                return_callback = "show_muhajir_books"
+            elif author == "أبو عمر المهاجر":
+                return_callback = "show_abu_omar_books"
+            elif author == "أبو بلال الحربي":
+                return_callback = "show_harbi_books"
+            
+            callback_query.message.edit_text(encrypt_text(f"📖 **{poem['title']}**\n\n---\n\n{poem['content']}\n\n✍️ {author}"), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ رجوع", callback_data=return_callback)]]))
+        else:
+            callback_query.answer(f"❌ القصيدة غير موجودة (المؤشر: {idx}, العدد الإجمالي: {len(current_poems)})", show_alert=True)
+    except Exception as e:
+        callback_query.answer(f"❌ خطأ في تحميل القصيدة: {str(e)}", show_alert=True)
 
 # --- قسم الكتب (ملفات PDF) ---
 
 # --- قسم أبو بلال الحربي ---
 @bot.on_callback_query(filters.regex("show_harbi_books"))
 def show_harbi_books(client, callback_query):
+    # تحميل القصائد ديناميكياً
+    current_poems = load_poems()
     # عرض قصائد أبو بلال الحربي مع الكتب
-    harbi_poems = [p for p in poems if p.get("author") == "أبو بلال الحربي"]
+    harbi_poems = [p for p in current_poems if p.get("author") == "أبو بلال الحربي"]
     keyboard = []
     
     # إضافة القصائد مع تحسين العرض
     for i, poem in enumerate(harbi_poems):
         title = poem.get("title", f"قصيدة {i+1}")
-        keyboard.append([InlineKeyboardButton(f"📜 {title}", callback_data=f"poem_{poems.index(poem)}")])
+        keyboard.append([InlineKeyboardButton(f"📜 {title}", callback_data=f"poem_{current_poems.index(poem)}")])
     
     # إضافة الكتب
     keyboard.append([InlineKeyboardButton("📖 وقفات مع الشيخ المربي", callback_data="send_harbi_pdf_1")])
@@ -242,7 +257,7 @@ def show_harbi_books(client, callback_query):
     
     # إضافة عدد القصائد في الرسالة مع تشخيص إضافي
     poem_count = len(harbi_poems)
-    total_poems = len(poems)
+    total_poems = len(current_poems)
     callback_query.message.edit_text(encrypt_text(f"⚔️ اختر من مؤلفات أبي بلال الحربي:\n\nعدد القصائد: {poem_count}\nإجمالي القصائد في الملف: {total_poems}"), reply_markup=InlineKeyboardMarkup(keyboard))
 
 @bot.on_callback_query(filters.regex("send_harbi_pdf_1"))
@@ -386,14 +401,16 @@ def show_louis(client, callback_query):
 
 @bot.on_callback_query(filters.regex("show_adnani_books"))
 def show_adnani_books(client, callback_query):
+    # تحميل القصائد ديناميكياً
+    current_poems = load_poems()
     # عرض قصائد العدناني مع الكتب
-    adnani_poems = [p for p in poems if p.get("author") == "العدنان"]
+    adnani_poems = [p for p in current_poems if p.get("author") == "العدنان"]
     keyboard = []
     
     # إضافة القصائد مع تحسين العرض
     for i, poem in enumerate(adnani_poems):
         title = poem.get("title", f"قصيدة {i+1}")
-        keyboard.append([InlineKeyboardButton(f"📜 {title}", callback_data=f"poem_{poems.index(poem)}")])
+        keyboard.append([InlineKeyboardButton(f"📜 {title}", callback_data=f"poem_{current_poems.index(poem)}")])
     
     # إضافة الكتب
     keyboard.append([InlineKeyboardButton("📖 الجامع لكلمات العدناني", callback_data="send_adnani_aljami")])
@@ -402,7 +419,7 @@ def show_adnani_books(client, callback_query):
     
     # إضافة عدد القصائد في الرسالة مع تشخيص إضافي
     poem_count = len(adnani_poems)
-    total_poems = len(poems)
+    total_poems = len(current_poems)
     callback_query.message.edit_text(encrypt_text(f"🎙️ اختر من مؤلفات العدناني:\n\nعدد القصائد: {poem_count}\nإجمالي القصائد في الملف: {total_poems}"), reply_markup=InlineKeyboardMarkup(keyboard))
 
 @bot.on_callback_query(filters.regex("send_adnani_aljami"))
@@ -417,14 +434,16 @@ def send_adnani_qasida(client, callback_query):
 
 @bot.on_callback_query(filters.regex("show_muhajir_books"))
 def show_muhajir_books(client, callback_query):
+    # تحميل القصائد ديناميكياً
+    current_poems = load_poems()
     # عرض قصائد أبو الحسن المهاجر مع الكتب
-    muhajir_poems = [p for p in poems if p.get("author") == "أبو الحسن المهاجر"]
+    muhajir_poems = [p for p in current_poems if p.get("author") == "أبو الحسن المهاجر"]
     keyboard = []
     
     # إضافة القصائد مع تحسين العرض
     for i, poem in enumerate(muhajir_poems):
         title = poem.get("title", f"قصيدة {i+1}")
-        keyboard.append([InlineKeyboardButton(f"📜 {title}", callback_data=f"poem_{poems.index(poem)}")])
+        keyboard.append([InlineKeyboardButton(f"📜 {title}", callback_data=f"poem_{current_poems.index(poem)}")])
     
     # إضافة الكتب
     keyboard.append([InlineKeyboardButton("📚 الجامع لكلمات أبي الحسن المهاجر", callback_data="send_muhajir_aljami")])
@@ -432,7 +451,7 @@ def show_muhajir_books(client, callback_query):
     
     # إضافة عدد القصائد في الرسالة مع تشخيص إضافي
     poem_count = len(muhajir_poems)
-    total_poems = len(poems)
+    total_poems = len(current_poems)
     callback_query.message.edit_text(encrypt_text(f"✍️ اختر من مؤلفات أبو الحسن المهاجر:\n\nعدد القصائد: {poem_count}\nإجمالي القصائد في الملف: {total_poems}"), reply_markup=InlineKeyboardMarkup(keyboard))
 
 @bot.on_callback_query(filters.regex("send_muhajir_aljami"))
@@ -442,20 +461,22 @@ def send_muhajir_aljami(client, callback_query):
 
 @bot.on_callback_query(filters.regex("show_abu_omar_books"))
 def show_abu_omar_books(client, callback_query):
+    # تحميل القصائد ديناميكياً
+    current_poems = load_poems()
     # عرض قصائد أبو عمر المهاجر فقط
-    abu_omar_poems = [p for p in poems if p.get("author") == "أبو عمر المهاجر"]
+    abu_omar_poems = [p for p in current_poems if p.get("author") == "أبو عمر المهاجر"]
     keyboard = []
     
     # إضافة القصائد مع تحسين العرض
     for i, poem in enumerate(abu_omar_poems):
         title = poem.get("title", f"قصيدة {i+1}")
-        keyboard.append([InlineKeyboardButton(f"📜 {title}", callback_data=f"poem_{poems.index(poem)}")])
+        keyboard.append([InlineKeyboardButton(f"📜 {title}", callback_data=f"poem_{current_poems.index(poem)}")])
     
     keyboard.append([InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")])
     
     # إضافة عدد القصائد في الرسالة مع تشخيص إضافي
     poem_count = len(abu_omar_poems)
-    total_poems = len(poems)
+    total_poems = len(current_poems)
     callback_query.message.edit_text(encrypt_text(f"👤 اختر من مؤلفات أبي عمر المهاجر:\n\nعدد القصائد: {poem_count}\nإجمالي القصائد في الملف: {total_poems}"), reply_markup=InlineKeyboardMarkup(keyboard))
 
 @bot.on_callback_query(filters.regex("show_qurashi_books"))
