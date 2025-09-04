@@ -721,17 +721,27 @@ def webhook():
                 # معالجة قصائد حسب المؤلفين
                 elif data.startswith("poem_"):
                     try:
+                        print(f"🔍 معالجة callback: {data}")
                         # تحميل القصائد ديناميكياً
                         current_poems = load_poems()
+                        print(f"📚 تم تحميل {len(current_poems)} قصيدة")
+                        
                         poem_index = int(data.split("_")[1])
+                        print(f"🔢 مؤشر القصيدة: {poem_index}")
+                        
                         if 0 <= poem_index < len(current_poems):
                             poem = current_poems[poem_index]
                             title = poem.get("title", f"قصيدة {poem_index + 1}")
                             content = poem.get("content", "المحتوى غير متوفر")
                             author = poem.get("author", "غير محدد")
                             
+                            print(f"📖 القصيدة: {title}")
+                            print(f"👤 المؤلف: {author}")
+                            print(f"📝 طول المحتوى: {len(content)} حرف")
+                            
                             # تقسيم المحتوى إذا كان طويلاً (أكثر من 4000 حرف)
                             if len(content) > 4000:
+                                print("📤 إرسال قصيدة طويلة مقسمة")
                                 # إرسال العنوان أولاً
                                 title_message = f"📖 **{title}**\n\n✍️ {author}"
                                 send(chat_id, title_message)
@@ -744,16 +754,20 @@ def webhook():
                             else:
                                 # إرسال القصيدة كاملة
                                 poem_message = f"📖 **{title}**\n\n---\n\n{content}\n\n✍️ {author}"
+                                print(f"📤 إرسال قصيدة كاملة طولها: {len(poem_message)} حرف")
                                 send(chat_id, poem_message)
                             
                             # إجابة على callback query
                             answer_cbq(cbq_id, "تم إرسال القصيدة")
                             
-                            print(f"تم إرسال قصيدة: {title} للمستخدم {chat_id}")
+                            print(f"✅ تم إرسال قصيدة: {title} للمستخدم {chat_id}")
                         else:
+                            print(f"❌ مؤشر خارج النطاق: {poem_index} >= {len(current_poems)}")
                             answer_cbq(cbq_id, f"❌ القصيدة غير موجودة (المؤشر: {poem_index}, العدد الإجمالي: {len(current_poems)})", show_alert=True)
                     except Exception as e:
-                        print(f"خطأ في إرسال القصيدة: {e}")
+                        print(f"❌ خطأ في إرسال القصيدة: {e}")
+                        import traceback
+                        traceback.print_exc()
                         answer_cbq(cbq_id, f"❌ خطأ في تحميل القصيدة: {str(e)}", show_alert=True)
                 
 
