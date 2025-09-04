@@ -279,9 +279,18 @@ def webhook():
                     answer_cbq(cbq_id)
                     # عرض قصائد أسامة بن لادن فقط
                     osama_poems = [p for p in POEMS if p.get("author") == "أسامة بن لادن"]
-                    keyboard = [[{"text": p.get("title", f"قصيدة {i+1}"), "callback_data": f"poem_{POEMS.index(p)}"}] for i, p in enumerate(osama_poems)]
+                    keyboard = []
+                    
+                    # إضافة القصائد مع تحسين العرض
+                    for i, poem in enumerate(osama_poems):
+                        title = poem.get("title", f"قصيدة {i+1}")
+                        keyboard.append([{"text": f"📜 {title}", "callback_data": f"poem_{POEMS.index(poem)}"}])
+                    
                     keyboard.append([{"text":"⬅️ رجوع","callback_data":"show_archive"}])
-                    edit(chat_id, msg_id, "قائمة القصائد:\n\n(أسامة بن لادن)", reply_markup=kb(keyboard))
+                    
+                    # إضافة عدد القصائد في الرسالة
+                    poem_count = len(osama_poems)
+                    edit(chat_id, msg_id, f"قائمة القصائد:\n\n(أسامة بن لادن)\n\nعدد القصائد: {poem_count}", reply_markup=kb(keyboard))
                 
                 elif data == "show_harbi_books":
                     answer_cbq(cbq_id)
@@ -291,14 +300,17 @@ def webhook():
                     
                     # إضافة القصائد
                     for i, poem in enumerate(harbi_poems):
-                        keyboard.append([{"text": f"📜 {poem.get('title')}", "callback_data": f"poem_{POEMS.index(poem)}"}])
+                        title = poem.get("title", f"قصيدة {i+1}")
+                        keyboard.append([{"text": f"📜 {title}", "callback_data": f"poem_{POEMS.index(poem)}"}])
                     
                     # إضافة الكتب
                     keyboard.append([{"text":"📖 وقفات مع الشيخ المربي","callback_data":"send_harbi_pdf_1"}])
                     keyboard.append([{"text":"📖 ماذا فعلت بنا يا سعد؟","callback_data":"send_harbi_pdf_2"}])
                     keyboard.append([{"text":"⬅️ رجوع","callback_data":"show_archive"}])
                     
-                    edit(chat_id, msg_id, "⚔️ اختر من مؤلفات أبي بلال الحربي:", reply_markup=kb(keyboard))
+                    # إضافة عدد القصائد في الرسالة
+                    poem_count = len(harbi_poems)
+                    edit(chat_id, msg_id, f"⚔️ اختر من مؤلفات أبي بلال الحربي:\n\nعدد القصائد: {poem_count}", reply_markup=kb(keyboard))
                 
                 elif data == "send_harbi_pdf_1":
                     answer_cbq(cbq_id, "سيتم إرسال الملف")
@@ -376,13 +388,16 @@ def webhook():
                     
                     # إضافة القصائد
                     for i, poem in enumerate(muhajir_poems):
-                        keyboard.append([{"text": f"📜 {poem.get('title')}", "callback_data": f"poem_{POEMS.index(poem)}"}])
+                        title = poem.get("title", f"قصيدة {i+1}")
+                        keyboard.append([{"text": f"📜 {title}", "callback_data": f"poem_{POEMS.index(poem)}"}])
                     
                     # إضافة الكتب
                     keyboard.append([{"text":"📖 الجامع لكلمات أبي الحسن المهاجر","callback_data":"send_muhajir_book_1"}])
                     keyboard.append([{"text":"⬅️ رجوع","callback_data":"show_archive"}])
                     
-                    edit(chat_id, msg_id, "📚 اختر من مؤلفات أبو الحسن المهاجر:", reply_markup=kb(keyboard))
+                    # إضافة عدد القصائد في الرسالة
+                    poem_count = len(muhajir_poems)
+                    edit(chat_id, msg_id, f"📚 اختر من مؤلفات أبو الحسن المهاجر:\n\nعدد القصائد: {poem_count}", reply_markup=kb(keyboard))
                 
                 elif data == "send_muhajir_book_1":
                     answer_cbq(cbq_id, "سيتم إرسال الملف")
@@ -396,14 +411,17 @@ def webhook():
                     
                     # إضافة القصائد
                     for i, poem in enumerate(adnani_poems):
-                        keyboard.append([{"text": f"📜 {poem.get('title')}", "callback_data": f"poem_{POEMS.index(poem)}"}])
+                        title = poem.get("title", f"قصيدة {i+1}")
+                        keyboard.append([{"text": f"📜 {title}", "callback_data": f"poem_{POEMS.index(poem)}"}])
                     
                     # إضافة الكتب
                     keyboard.append([{"text":"📖 قصيدة معركة الفلوجة الثانية","callback_data":"send_adnani_book_1"}])
                     keyboard.append([{"text":"📖 الجامع للعدناني","callback_data":"send_adnani_book_2"}])
                     keyboard.append([{"text":"⬅️ رجوع","callback_data":"show_archive"}])
                     
-                    edit(chat_id, msg_id, "📚 اختر من مؤلفات العدناني:", reply_markup=kb(keyboard))
+                    # إضافة عدد القصائد في الرسالة
+                    poem_count = len(adnani_poems)
+                    edit(chat_id, msg_id, f"📚 اختر من مؤلفات العدناني:\n\nعدد القصائد: {poem_count}", reply_markup=kb(keyboard))
                 
                 elif data == "send_adnani_book_1":
                     answer_cbq(cbq_id, "سيتم إرسال الملف")
@@ -428,9 +446,19 @@ def webhook():
                     answer_cbq(cbq_id)
                     # عرض قصائد أبو عمر المهاجر فقط
                     abu_omar_poems = [p for p in POEMS if p.get("author") == "أبو عمر المهاجر"]
-                    keyboard = [[{"text": p.get("title", f"قصيدة {i+1}"), "callback_data": f"poem_{POEMS.index(p)}"}] for i, p in enumerate(abu_omar_poems)]
+                    keyboard = []
+                    
+                    # إضافة القصائد مع تحسين العرض
+                    for i, poem in enumerate(abu_omar_poems):
+                        title = poem.get("title", f"قصيدة {i+1}")
+                        keyboard.append([{"text": f"📜 {title}", "callback_data": f"poem_{POEMS.index(poem)}"}])
+                    
                     keyboard.append([{"text":"⬅️ رجوع","callback_data":"show_archive"}])
-                    edit(chat_id, msg_id, "📚 القصائد المتاحة:\n\n(أبو عمر المهاجر)", reply_markup=kb(keyboard))
+                    
+                    # إضافة عدد القصائد في الرسالة مع تشخيص إضافي
+                    poem_count = len(abu_omar_poems)
+                    total_poems = len(POEMS)
+                    edit(chat_id, msg_id, f"📚 القصائد المتاحة:\n\n(أبو عمر المهاجر)\n\nعدد القصائد: {poem_count}\nإجمالي القصائد في الملف: {total_poems}", reply_markup=kb(keyboard))
                 
                 elif data == "show_shaybah_books":
                     answer_cbq(cbq_id)
@@ -684,9 +712,9 @@ def webhook():
                             answer_cbq(cbq_id, "تم إرسال القصيدة")
                             send(chat_id, f"📖 {title}\n\n{content}\n\n✍️ {author}")
                         else:
-                            answer_cbq(cbq_id, "❌ القصيدة غير موجودة", show_alert=True)
-                    except:
-                        answer_cbq(cbq_id, "❌ خطأ في تحميل القصيدة", show_alert=True)
+                            answer_cbq(cbq_id, f"❌ القصيدة غير موجودة (المؤشر: {poem_index}, العدد الإجمالي: {len(POEMS)})", show_alert=True)
+                    except Exception as e:
+                        answer_cbq(cbq_id, f"❌ خطأ في تحميل القصيدة: {str(e)}", show_alert=True)
                 
 
                 
