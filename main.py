@@ -111,19 +111,8 @@ intro_message = (
 )
 
 # 📝 تحميل القصائد من ملف خارجي
-def load_poems():
-    try:
-        with open("poems.json", "r", encoding="utf-8") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print("Error: poems.json file not found.")
-        return []
-    except json.JSONDecodeError:
-        print("Error: Could not decode poems.json.")
-        return []
-    except Exception as e:
-        print(f"Error loading poems: {e}")
-        return []
+# تحميل القصائد من الملف المباشر
+from poems_direct import load_poems
 
 poems = load_poems()
 

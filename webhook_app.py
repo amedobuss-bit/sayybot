@@ -18,14 +18,8 @@ INTRO_MESSAGE = (
     "فاكتبْ، فإنّ روحَ القُدُسِ معك، ما نصرتَ الحق، وأقمتَ الكلمةَ، وجعلتَ المِدادَ جـ ـهـ ادًا."
 )
 
-# تحميل القصائد
-def load_poems():
-    try:
-        with open("poems.json", "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        print(f"Error loading poems: {e}")
-        return []
+# تحميل القصائد من الملف المباشر
+from poems_direct import load_poems
 
 POEMS = load_poems()
 
