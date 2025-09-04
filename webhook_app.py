@@ -729,11 +729,31 @@ def webhook():
                             title = poem.get("title", f"قصيدة {poem_index + 1}")
                             content = poem.get("content", "المحتوى غير متوفر")
                             author = poem.get("author", "غير محدد")
+                            
+                            # تقسيم المحتوى إذا كان طويلاً (أكثر من 4000 حرف)
+                            if len(content) > 4000:
+                                # إرسال العنوان أولاً
+                                title_message = f"📖 **{title}**\n\n✍️ {author}"
+                                send(chat_id, title_message)
+                                
+                                # تقسيم المحتوى إلى أجزاء
+                                parts = [content[i:i+4000] for i in range(0, len(content), 4000)]
+                                for i, part in enumerate(parts):
+                                    part_message = f"--- الجزء {i+1} ---\n\n{part}"
+                                    send(chat_id, part_message)
+                            else:
+                                # إرسال القصيدة كاملة
+                                poem_message = f"📖 **{title}**\n\n---\n\n{content}\n\n✍️ {author}"
+                                send(chat_id, poem_message)
+                            
+                            # إجابة على callback query
                             answer_cbq(cbq_id, "تم إرسال القصيدة")
-                            send(chat_id, f"📖 {title}\n\n{content}\n\n✍️ {author}")
+                            
+                            print(f"تم إرسال قصيدة: {title} للمستخدم {chat_id}")
                         else:
                             answer_cbq(cbq_id, f"❌ القصيدة غير موجودة (المؤشر: {poem_index}, العدد الإجمالي: {len(current_poems)})", show_alert=True)
                     except Exception as e:
+                        print(f"خطأ في إرسال القصيدة: {e}")
                         answer_cbq(cbq_id, f"❌ خطأ في تحميل القصيدة: {str(e)}", show_alert=True)
                 
 

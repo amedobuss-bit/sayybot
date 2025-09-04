@@ -228,10 +228,43 @@ def show_poem(client, callback_query):
             elif author == "أبو بلال الحربي":
                 return_callback = "show_harbi_books"
             
-            callback_query.message.edit_text(encrypt_text(f"📖 **{poem['title']}**\n\n---\n\n{poem['content']}\n\n✍️ {author}"), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ رجوع", callback_data=return_callback)]]))
+            content = poem.get("content", "المحتوى غير متوفر")
+            
+            # تقسيم المحتوى إذا كان طويلاً (أكثر من 4000 حرف)
+            if len(content) > 4000:
+                # إرسال العنوان أولاً
+                title_message = f"📖 **{poem['title']}**\n\n✍️ {author}"
+                client.send_message(
+                    chat_id=callback_query.message.chat.id,
+                    text=encrypt_text(title_message),
+                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ رجوع", callback_data=return_callback)]])
+                )
+                
+                # تقسيم المحتوى إلى أجزاء
+                parts = [content[i:i+4000] for i in range(0, len(content), 4000)]
+                for i, part in enumerate(parts):
+                    part_message = f"--- الجزء {i+1} ---\n\n{part}"
+                    client.send_message(
+                        chat_id=callback_query.message.chat.id,
+                        text=encrypt_text(part_message)
+                    )
+            else:
+                # إرسال القصيدة كاملة
+                poem_message = f"📖 **{poem['title']}**\n\n---\n\n{content}\n\n✍️ {author}"
+                client.send_message(
+                    chat_id=callback_query.message.chat.id,
+                    text=encrypt_text(poem_message),
+                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ رجوع", callback_data=return_callback)]])
+                )
+            
+            # إجابة على callback query
+            callback_query.answer("تم إرسال القصيدة")
+            
+            print(f"تم إرسال قصيدة: {poem['title']} للمستخدم {callback_query.message.chat.id}")
         else:
             callback_query.answer(f"❌ القصيدة غير موجودة (المؤشر: {idx}, العدد الإجمالي: {len(current_poems)})", show_alert=True)
     except Exception as e:
+        print(f"خطأ في إرسال القصيدة: {e}")
         callback_query.answer(f"❌ خطأ في تحميل القصيدة: {str(e)}", show_alert=True)
 
 # --- قسم الكتب (ملفات PDF) ---
