@@ -320,74 +320,332 @@ def webhook():
                 
                 # باقي الأقسام المفقودة
                 elif data == "show_mysara_gharib_books":
-                    answer_cbq(cbq_id, "قسم ميسرة الغريب - قريباً")
-                    edit(chat_id, msg_id, "قسم ميسرة الغريب - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات ميسرة الغريب:",
+                         reply_markup=kb([
+                            [{"text":"📖 إنما شفاء العيّ السؤال","callback_data":"send_mysara_book_1"}],
+                            [{"text":"📖 الكُرَبُ وسُبُلُ تَفْرِيجِها","callback_data":"send_mysara_book_2"}],
+                            [{"text":"📖 يوميات مجاهد من الفلوجة","callback_data":"send_mysara_book_3"}],
+                            [{"text":"📖 موسوعة أبو زبيدة الأمنية","callback_data":"send_mysara_book_4"}],
+                            [{"text":"📖 قـالـوا.. فـقـل!","callback_data":"send_mysara_book_5"}],
+                            [{"text":"📖 سلسلة من خفايا التاريخ الزرقاوي","callback_data":"send_mysara_book_6"}],
+                            [{"text":"📖 سلسلة بدمائهم نصحوا 1.. منهج حياة","callback_data":"send_mysara_book_7"}],
+                            [{"text":"📖 رَمْزِيَّات","callback_data":"send_mysara_book_8"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_mysara_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/ميسرة الغريب/إنما شفاء العيّ السؤال.pdf", "📖 إنما شفاء العيّ السؤال (ميسرة الغريب)")
+                elif data == "send_mysara_book_2":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/ميسرة الغريب/الكُرَبُ وسُبُلُ تَفْرِيجِها.pdf", "📖 الكُرَبُ وسُبُلُ تَفْرِيجِها (ميسرة الغريب)")
+                elif data == "send_mysara_book_3":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/ميسرة الغريب/يوميات مجاهد من الفلوجة .pdf", "📖 يوميات مجاهد من الفلوجة (ميسرة الغريب)")
+                elif data == "send_mysara_book_4":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/ميسرة الغريب/موسوعة أبو زبيدة الأمنية.pdf", "📖 موسوعة أبو زبيدة الأمنية (ميسرة الغريب)")
+                elif data == "send_mysara_book_5":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/ميسرة الغريب/قـالـوا.. فـقـل!.pdf", "📖 قـالـوا.. فـقـل! (ميسرة الغريب)")
+                elif data == "send_mysara_book_6":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/ميسرة الغريب/سلسلة_من_خفايا_التاريخ_الزرقاوي.pdf", "📖 سلسلة من خفايا التاريخ الزرقاوي (ميسرة الغريب)")
+                elif data == "send_mysara_book_7":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/ميسرة الغريب/سلسلة بدمائهم نصحوا 1.. منهج حياة.pdf", "📖 سلسلة بدمائهم نصحوا 1.. منهج حياة (ميسرة الغريب)")
+                elif data == "send_mysara_book_8":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/ميسرة الغريب/رَمْزِيَّات.pdf", "📖 رَمْزِيَّات (ميسرة الغريب)")
                 
                 elif data == "show_muhajir_books":
-                    answer_cbq(cbq_id, "قسم أبو الحسن المهاجر - قريباً")
-                    edit(chat_id, msg_id, "قسم أبو الحسن المهاجر - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات أبو الحسن المهاجر:",
+                         reply_markup=kb([
+                            [{"text":"📖 الجامع لكلمات أبي الحسن المهاجر","callback_data":"send_muhajir_book_1"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_muhajir_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/أبو الحسن المهاجر/الجامع لكلمات أبي الحسن المهاجر.pdf", "📖 الجامع لكلمات أبي الحسن المهاجر")
                 
                 elif data == "show_adnani_books":
-                    answer_cbq(cbq_id, "قسم العدنان - قريباً")
-                    edit(chat_id, msg_id, "قسم العدنان - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات العدناني:",
+                         reply_markup=kb([
+                            [{"text":"📖 قصيدة معركة الفلوجة الثانية","callback_data":"send_adnani_book_1"}],
+                            [{"text":"📖 الجامع للعدناني","callback_data":"send_adnani_book_2"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_adnani_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/العدناني/قصيدة معركة الفلوجة الثانية.pdf", "📖 قصيدة معركة الفلوجة الثانية (العدناني)")
+                elif data == "send_adnani_book_2":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/العدناني/الجامع للعدناني.pdf", "📖 الجامع للعدناني")
                 
                 elif data == "show_qurashi_books":
-                    answer_cbq(cbq_id, "قسم أبو حمزة القرشي - قريباً")
-                    edit(chat_id, msg_id, "قسم أبو حمزة القرشي - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات أبو حمزة القرشي:",
+                         reply_markup=kb([
+                            [{"text":"📖 الجامع لكلمات أبي حمزة القرشي","callback_data":"send_qurashi_book_1"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_qurashi_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/أبو حمزة القرشي/الجامع لكلمات أبي حمزة القرشي.pdf", "📖 الجامع لكلمات أبي حمزة القرشي")
                 
                 elif data == "show_abu_omar_books":
-                    answer_cbq(cbq_id, "قسم أبو عمر المهاجر - قريباً")
-                    edit(chat_id, msg_id, "قسم أبو عمر المهاجر - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    # أبو عمر المهاجر - قصائده في الجيسون
+                    abu_omar_poems = [p for p in POEMS if "أبو عمر" in p.get("title", "") or "أبو عمر" in p.get("content", "")][:10]
+                    keyboard = [[{"text": p.get("title", f"قصيدة {i+1}"), "callback_data": f"poem_abu_omar_{i}"}] for i, p in enumerate(abu_omar_poems)]
+                    keyboard.append([{"text":"⬅️ رجوع","callback_data":"show_archive"}])
+                    edit(chat_id, msg_id, "📚 قصائد أبو عمر المهاجر:", reply_markup=kb(keyboard))
                 
                 elif data == "show_shaybah_books":
-                    answer_cbq(cbq_id, "قسم الشاعر أبو مالك شيبة الحمد - قريباً")
-                    edit(chat_id, msg_id, "قسم الشاعر أبو مالك شيبة الحمد - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات الشاعر أبو مالك شيبة الحمد:",
+                         reply_markup=kb([
+                            [{"text":"📖 الستينية فى ذكر سلاطين الخلافة العثمانية","callback_data":"send_shaybah_book_1"}],
+                            [{"text":"📖 يا أسيراً خلفَ قضبانِ العدا","callback_data":"send_shaybah_book_2"}],
+                            [{"text":"📖 مرثية آل الشيخ أسامة","callback_data":"send_shaybah_book_3"}],
+                            [{"text":"📖 الديوان العـرّيســة الشعري","callback_data":"send_shaybah_book_4"}],
+                            [{"text":"📖 قصيدة جحاجح القوقاز","callback_data":"send_shaybah_book_5"}],
+                            [{"text":"📖 أنا مع أبي بكر","callback_data":"send_shaybah_book_6"}],
+                            [{"text":"📖 سلام و إكرام لدولة الإسلام","callback_data":"send_shaybah_book_7"}],
+                            [{"text":"📖 قصيدة سلام على سجن كوبر","callback_data":"send_shaybah_book_8"}],
+                            [{"text":"📖 يـا دارَ سِـرْتَ الفاتحيـنَ","callback_data":"send_shaybah_book_9"}],
+                            [{"text":"📖 قصيدة ذكـرتـك يـا أسـامـة دموع القلب","callback_data":"send_shaybah_book_10"}],
+                            [{"text":"📖 على نهج الرسول","callback_data":"send_shaybah_book_11"}],
+                            [{"text":"📖 أزفتْ نهايةُ جبهةِ الجولاني","callback_data":"send_shaybah_book_12"}],
+                            [{"text":"📖 قصيدة رحل الشّهيد وما رحل","callback_data":"send_shaybah_book_13"}],
+                            [{"text":"📖 قصيدة صرخة من أزواد","callback_data":"send_shaybah_book_14"}],
+                            [{"text":"📖 قصيدة متنا دعاة على أبواب عزتنا","callback_data":"send_shaybah_book_15"}],
+                            [{"text":"📖 قصيدة نصرة لعبد الكريم الحميد","callback_data":"send_shaybah_book_16"}],
+                            [{"text":"📖 ديوان عبرة وعبير","callback_data":"send_shaybah_book_17"}],
+                            [{"text":"📖 قصيدة فارس الإيمان","callback_data":"send_shaybah_book_18"}],
+                            [{"text":"📖 قصيدة متى يكسر الشعب أغلاله","callback_data":"send_shaybah_book_19"}],
+                            [{"text":"📖 قصيدة أرق بالسيف كل دم كفور","callback_data":"send_shaybah_book_20"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_shaybah_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/الستينية فى ذكر سلاطين الخلافة العثمانية بقلم شيبة الحمد -للتعديل.pdf", "📖 الستينية فى ذكر سلاطين الخلافة العثمانية (شيبة الحمد)")
+                elif data == "send_shaybah_book_2":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/يا أسيراً خلفَ قضبانِ العدا.pdf", "📖 يا أسيراً خلفَ قضبانِ العدا (شيبة الحمد)")
+                elif data == "send_shaybah_book_3":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/مرثية آل الشيخ أسامة للشاعر شيبة الحمد.pdf", "📖 مرثية آل الشيخ أسامة (شيبة الحمد)")
+                elif data == "send_shaybah_book_4":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/الديوان العـرّيســة الشعري للشيخ شيبة الحمد.pdf", "📖 الديوان العـرّيســة الشعري (شيبة الحمد)")
+                elif data == "send_shaybah_book_5":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/قصيدة جحاجح القوقاز - شيبة الحمد.pdf", "📖 قصيدة جحاجح القوقاز (شيبة الحمد)")
+                elif data == "send_shaybah_book_6":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/أنا مع أبي بكر- شعر شيبة الحمد.pdf", "📖 أنا مع أبي بكر (شيبة الحمد)")
+                elif data == "send_shaybah_book_7":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/سلام و إكرام لدولة الإسلام.pdf", "📖 سلام و إكرام لدولة الإسلام (شيبة الحمد)")
+                elif data == "send_shaybah_book_8":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/قصيدة  سلام على سجن كوبر شيبة الحمد.pdf", "📖 قصيدة سلام على سجن كوبر (شيبة الحمد)")
+                elif data == "send_shaybah_book_9":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/يـا دارَ سِـرْتَ  الفاتحيـنَ للشيخ شيبة الحمد.pdf", "📖 يـا دارَ سِـرْتَ الفاتحيـنَ (شيبة الحمد)")
+                elif data == "send_shaybah_book_10":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/قصيدة ذكـرتـك يـا أسـامـة دموع القلب شـيـبـة الـحـمـد.pdf", "📖 قصيدة ذكـرتـك يـا أسـامـة دموع القلب (شيبة الحمد)")
+                elif data == "send_shaybah_book_11":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/على نهج الرسول - أبو مالك شيبة الحمد.pdf", "📖 على نهج الرسول (شيبة الحمد)")
+                elif data == "send_shaybah_book_12":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/أزفتْ نهايةُ جبهةِ الجولاني - شيبة الحمد.pdf", "📖 أزفتْ نهايةُ جبهةِ الجولاني (شيبة الحمد)")
+                elif data == "send_shaybah_book_13":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/قصيدة رحل الشّهيد وما رحل، شيبة الحمد.pdf", "📖 قصيدة رحل الشّهيد وما رحل (شيبة الحمد)")
+                elif data == "send_shaybah_book_14":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/قصيدة صرخة من أزواد، شيبة الحمد.pdf", "📖 قصيدة صرخة من أزواد (شيبة الحمد)")
+                elif data == "send_shaybah_book_15":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/قصيدة متنا دعاة على أبواب عزتنا، شيبة الحمد.pdf", "📖 قصيدة متنا دعاة على أبواب عزتنا (شيبة الحمد)")
+                elif data == "send_shaybah_book_16":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/قصيدة نصرة لعبد الكريم_ الحميد، شيبة الحمد.pdf", "📖 قصيدة نصرة لعبد الكريم الحميد (شيبة الحمد)")
+                elif data == "send_shaybah_book_17":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/ديوان عبرة وعبير، شيبة الحمد.pdf", "📖 ديوان عبرة وعبير (شيبة الحمد)")
+                elif data == "send_shaybah_book_18":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/قصيدة فارس الإيمان، شيبة الحمد.pdf", "📖 قصيدة فارس الإيمان (شيبة الحمد)")
+                elif data == "send_shaybah_book_19":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/قصيدة متى يكسر الشعب أغلاله، شيبة الحمد.pdf", "📖 قصيدة متى يكسر الشعب أغلاله (شيبة الحمد)")
+                elif data == "send_shaybah_book_20":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/الشاعر أبـو مـالك شيبـة الحمـد/قصيدة أرق بالسيف كل دم كفور،_شيبة الحمد.pdf", "📖 قصيدة أرق بالسيف كل دم كفور (شيبة الحمد)")
                 
                 elif data == "show_zuhayri_books":
-                    answer_cbq(cbq_id, "قسم المهندس محمد الزهيري - قريباً")
-                    edit(chat_id, msg_id, "قسم المهندس محمد الزهيري - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات المهندس محمد الزهيري:",
+                         reply_markup=kb([
+                            [{"text":"📖 نسجت لكم بقاني الدم عهدا","callback_data":"send_zuhayri_book_1"}],
+                            [{"text":"📖 ستزيد دعوتنا عزا وتمكينا","callback_data":"send_zuhayri_book_2"}],
+                            [{"text":"📖 عراق الله یزخر بالغیارى","callback_data":"send_zuhayri_book_3"}],
+                            [{"text":"📖 مَنْ مُبلغٍ كلبَ الروافض ياسراً","callback_data":"send_zuhayri_book_4"}],
+                            [{"text":"📖 ركزنا في ذرى الأمجاد رمحاً","callback_data":"send_zuhayri_book_5"}],
+                            [{"text":"📖 أعدنا القادسية في شموخٍ","callback_data":"send_zuhayri_book_6"}],
+                            [{"text":"📖 يا دولة التوحيد أينع زرعنا","callback_data":"send_zuhayri_book_7"}],
+                            [{"text":"📖 هيهات ينــــزو كافـرٌ","callback_data":"send_zuhayri_book_8"}],
+                            [{"text":"📖 نازلُ الأعماق للموت سعى","callback_data":"send_zuhayri_book_9"}],
+                            [{"text":"📖 يكفي محمدا أن الله حافظه","callback_data":"send_zuhayri_book_10"}],
+                            [{"text":"📖 صليل الصوارم","callback_data":"send_zuhayri_book_11"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_zuhayri_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/نسجت لكم بقاني الدم عهدا -محمد الزهيري.pdf", "📖 نسجت لكم بقاني الدم عهدا (محمد الزهيري)")
+                elif data == "send_zuhayri_book_2":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/ستزيد دعوتنا عزا وتمكينا -محمد الزهيري.pdf", "📖 ستزيد دعوتنا عزا وتمكينا (محمد الزهيري)")
+                elif data == "send_zuhayri_book_3":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/عراق اﷲ یزخر بالغیارى محمد الزهيري.pdf", "📖 عراق الله یزخر بالغیارى (محمد الزهيري)")
+                elif data == "send_zuhayri_book_4":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/قصيدة_مَنْ_مُبلغٍ_كلبَ_الروافض_ياسراً_نصرة_لأم_المؤمنين_عائشة_رضي.pdf", "📖 مَنْ مُبلغٍ كلبَ الروافض ياسراً (محمد الزهيري)")
+                elif data == "send_zuhayri_book_5":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/ركزنا في ذرى الأمجاد رمحاً - محمد الزهيري.pdf", "📖 ركزنا في ذرى الأمجاد رمحاً (محمد الزهيري)")
+                elif data == "send_zuhayri_book_6":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/أعدنا القادسية في شموخٍ - محمد الزهيري.pdf", "📖 أعدنا القادسية في شموخٍ (محمد الزهيري)")
+                elif data == "send_zuhayri_book_7":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/يا دولة التوحيد أينع زرعنا - محمد الزهيري.pdf", "📖 يا دولة التوحيد أينع زرعنا (محمد الزهيري)")
+                elif data == "send_zuhayri_book_8":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/هيهات ينــــزو كافـرٌ - محمد الزهيري.pdf", "📖 هيهات ينــــزو كافـرٌ (محمد الزهيري)")
+                elif data == "send_zuhayri_book_9":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/نازلُ الأعماق للموت سعى -محمد الزهيري.pdf", "📖 نازلُ الأعماق للموت سعى (محمد الزهيري)")
+                elif data == "send_zuhayri_book_10":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/قصيدة يكفي محمدا أن الله حافظه للاخ محمد الزهيري.pdf", "📖 يكفي محمدا أن الله حافظه (محمد الزهيري)")
+                elif data == "send_zuhayri_book_11":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/المهندس محمد الزهيري/صليل الصوارم - محمد الزهيري.pdf", "📖 صليل الصوارم (محمد الزهيري)")
                 
                 elif data == "show_bint_najd_books":
-                    answer_cbq(cbq_id, "قسم بنت نجد - قريباً")
-                    edit(chat_id, msg_id, "قسم بنت نجد - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات بنت نجد:",
+                         reply_markup=kb([
+                            [{"text":"📖 مادحة للعدناني هاجية للجولاني","callback_data":"send_bint_najd_book_1"}],
+                            [{"text":"📖 أمسِكْ لسانكَ يا قُنيبي","callback_data":"send_bint_najd_book_2"}],
+                            [{"text":"📖 فرعونُ نجد ستنتهي أيامهُ","callback_data":"send_bint_najd_book_3"}],
+                            [{"text":"📖 هذه دولة الإسلام، ياعشماوي","callback_data":"send_bint_najd_book_4"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_bint_najd_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/بنت نجد/مادحة للعدناني هاجية للجولاني.pdf", "📖 مادحة للعدناني هاجية للجولاني (بنت نجد)")
+                elif data == "send_bint_najd_book_2":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/بنت نجد/أمسِكْ لسانكَ يا قُنيبي.pdf", "📖 أمسِكْ لسانكَ يا قُنيبي (بنت نجد)")
+                elif data == "send_bint_najd_book_3":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/بنت نجد/فرعونُ نجد ستنتهي أيامهُ.pdf", "📖 فرعونُ نجد ستنتهي أيامهُ (بنت نجد)")
+                elif data == "send_bint_najd_book_4":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/بنت نجد/هذه دولة الإسلام، ياعشماوي - بنت نجد.pdf", "📖 هذه دولة الإسلام، ياعشماوي (بنت نجد)")
                 
                 elif data == "show_oqab_masri":
-                    answer_cbq(cbq_id, "قسم العقاب المصري - قريباً")
-                    edit(chat_id, msg_id, "قسم العقاب المصري - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات العقاب المصري:",
+                         reply_markup=kb([
+                            [{"text":"📖 إلى ابْنَتي مَوَدَّة","callback_data":"send_oqab_book_1"}],
+                            [{"text":"📖 هنا الخلافة- ديوان شعري","callback_data":"send_oqab_book_2"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_oqab_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/العقاب المصري/إلى ابْنَتي مَوَدَّة.pdf", "📖 إلى ابْنَتي مَوَدَّة (العقاب المصري)")
+                elif data == "send_oqab_book_2":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/العقاب المصري/هنا الخلافة- ديوان شعري العقاب المصري.pdf", "📖 هنا الخلافة- ديوان شعري (العقاب المصري)")
                 
                 elif data == "show_marthad_abdullah":
-                    answer_cbq(cbq_id, "قسم مرثد بن عبد الله - قريباً")
-                    edit(chat_id, msg_id, "قسم مرثد بن عبد الله - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات مرثد بن عبد الله:",
+                         reply_markup=kb([
+                            [{"text":"📖 بعض من قصائد مرثد بن عبد الله","callback_data":"send_marthad_book_1"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_marthad_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/مـرثد بن عبد الله/بعض من قصائد مرثد بن عبد الله.pdf", "📖 بعض من قصائد مرثد بن عبد الله")
                 
                 elif data == "show_abu_khithama":
-                    answer_cbq(cbq_id, "قسم أبو خيثمة الشنقيطي - قريباً")
-                    edit(chat_id, msg_id, "قسم أبو خيثمة الشنقيطي - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات أبو خيثمة الشنقيطي:",
+                         reply_markup=kb([
+                            [{"text":"📖 قصائد دبجت بالدماء","callback_data":"send_abu_khithama_book_1"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_abu_khithama_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/قصائد دبجت بالدماء.pdf", "📖 قصائد دبجت بالدماء (أبو خيثمة الشنقيطي)")
                 
                 elif data == "show_louis":
-                    answer_cbq(cbq_id, "قسم لويس عطية الله - قريباً")
-                    edit(chat_id, msg_id, "قسم لويس عطية الله - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات لويس عطية الله:",
+                         reply_markup=kb([
+                            [{"text":"📖 لويس مقالات","callback_data":"send_louis_book_1"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_louis_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/لويس_مقالات.pdf", "📖 لويس مقالات (لويس عطية الله)")
                 
                 elif data == "show_abu_bakr_madani_books":
-                    answer_cbq(cbq_id, "قسم أبو بكر المدني - قريباً")
-                    edit(chat_id, msg_id, "قسم أبو بكر المدني - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات أبو بكر المدني:",
+                         reply_markup=kb([
+                            [{"text":"📖 لفت الأنظار لما جاء في الفلوجتين من أخبار","callback_data":"send_abu_bakr_madani_book_1"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_abu_bakr_madani_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/أبو بكر المدني/لفت_الأنظار_لما_جاء_في_الفلوجتين_من_أخبار_1.pdf", "📖 لفت الأنظار لما جاء في الفلوجتين من أخبار (أبو بكر المدني)")
                 
                 elif data == "show_hussein_almadidi":
-                    answer_cbq(cbq_id, "قسم حسين المعاضيدي - قريباً")
-                    edit(chat_id, msg_id, "قسم حسين المعاضيدي - قريباً", 
-                         reply_markup=kb([[{"text":"⬅️ رجوع","callback_data":"show_archive"}]]))
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "📚 اختر من مؤلفات حسين المعاضيدي:",
+                         reply_markup=kb([
+                            [{"text":"📖 هنا أرض الخلافة","callback_data":"send_hussein_book_1"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                
+                elif data == "send_hussein_book_1":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/حسين المعاضيدي/هنا أرض الخلافة- حسين المعاضيدي.pdf", "📖 هنا أرض الخلافة (حسين المعاضيدي)")
 
                 # معالجة قصائد أسامة بن لادن
                 elif data.startswith("poem_"):
@@ -395,6 +653,22 @@ def webhook():
                         poem_index = int(data.split("_")[1])
                         if 0 <= poem_index < len(POEMS):
                             poem = POEMS[poem_index]
+                            title = poem.get("title", f"قصيدة {poem_index + 1}")
+                            content = poem.get("content", "المحتوى غير متوفر")
+                            answer_cbq(cbq_id, "تم إرسال القصيدة")
+                            send(chat_id, f"📖 {title}\n\n{content}")
+                        else:
+                            answer_cbq(cbq_id, "❌ القصيدة غير موجودة", show_alert=True)
+                    except:
+                        answer_cbq(cbq_id, "❌ خطأ في تحميل القصيدة", show_alert=True)
+                
+                # معالجة قصائد أبو عمر المهاجر
+                elif data.startswith("poem_abu_omar_"):
+                    try:
+                        poem_index = int(data.split("_")[3])
+                        abu_omar_poems = [p for p in POEMS if "أبو عمر" in p.get("title", "") or "أبو عمر" in p.get("content", "")]
+                        if 0 <= poem_index < len(abu_omar_poems):
+                            poem = abu_omar_poems[poem_index]
                             title = poem.get("title", f"قصيدة {poem_index + 1}")
                             content = poem.get("content", "المحتوى غير متوفر")
                             answer_cbq(cbq_id, "تم إرسال القصيدة")
