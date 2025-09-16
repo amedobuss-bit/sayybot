@@ -111,6 +111,7 @@ def webhook():
                                 [{"text":"أبو عمر المهاجر","callback_data":"show_abu_omar_books"}],
                                 [{"text":"أبو بلال الحربي","callback_data":"show_harbi_books"}],
                                 [{"text":"أحلام النصر الدمشقية","callback_data":"show_ahlam_alnaser_books"}],
+                                [{"text":"أبو دجانة الخوراساني","callback_data":"show_abu_dujana_khorasani"}],
                                 [{"text":"الشاعر أبو مالك شيبة الحمد","callback_data":"show_shaybah_books"}],
                                 [{"text":"المهندس محمد الزهيري","callback_data":"show_zuhayri_books"}],
                                 [{"text":"بنت نجد","callback_data":"show_bint_najd_books"}],
@@ -155,6 +156,7 @@ def webhook():
                         [{"text":"أبو عمر المهاجر","callback_data":"show_abu_omar_books"}],
                         [{"text":"أبو بلال الحربي","callback_data":"show_harbi_books"}],
                         [{"text":"أحلام النصر الدمشقية","callback_data":"show_ahlam_alnaser_books"}],
+                        [{"text":"أبو دجانة الخوراساني","callback_data":"show_abu_dujana_khorasani"}],
                         [{"text":"الشاعر أبو مالك شيبة الحمد","callback_data":"show_shaybah_books"}],
                         [{"text":"المهندس محمد الزهيري","callback_data":"show_zuhayri_books"}],
                         [{"text":"بنت نجد","callback_data":"show_bint_najd_books"}],
@@ -711,6 +713,18 @@ def webhook():
                 elif data == "send_hussein_book_1":
                     answer_cbq(cbq_id, "سيتم إرسال الملف")
                     send_doc(chat_id, "قصائد المشروع/حسين المعاضيدي/هنا أرض الخلافة- حسين المعاضيدي.pdf", "📖 هنا أرض الخلافة (حسين المعاضيدي)")
+
+                # قسم أبو دجانة الخوراساني
+                elif data == "show_abu_dujana_khorasani":
+                    answer_cbq(cbq_id)
+                    edit(chat_id, msg_id, "✍️ اختر من مؤلفات أبو دجانة الخوراساني:",
+                         reply_markup=kb([
+                            [{"text":"📖 جامع كتاباته","callback_data":"send_abu_dujana_khorasani_aljami"}],
+                            [{"text":"⬅️ رجوع","callback_data":"show_archive"}]
+                         ]))
+                elif data == "send_abu_dujana_khorasani_aljami":
+                    answer_cbq(cbq_id, "سيتم إرسال الملف")
+                    send_doc(chat_id, "قصائد المشروع/أبو دجانة الخوراساني/Noor-Book.com  أبو دجانة الخراساني.pdf", "📖 جامع كتابات أبو دجانة الخوراساني")
 
                 # معالجة قصائد حسب المؤلفين
                 elif data.startswith("poem_"):
