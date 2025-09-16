@@ -160,6 +160,7 @@ def show_archive(client, callback_query):
         [InlineKeyboardButton(encrypt_text("أبو عمر المهاجر"), callback_data="show_abu_omar_books")],
         [InlineKeyboardButton(encrypt_text("أبو بلال الحربي"), callback_data="show_harbi_books")],
         [InlineKeyboardButton(encrypt_text("أحلام النصر الدمشقية"), callback_data="show_ahlam_alnaser_books")],
+        [InlineKeyboardButton(encrypt_text("أبو دجانة الخوراساني"), callback_data="show_abu_dujana_khorasani")],
         # --- باقي الأسماء بترتيب غير مهم ---
         [InlineKeyboardButton(encrypt_text("الشاعر أبو مالك شيبية الحمد"), callback_data="show_shaybah_books")],
         [InlineKeyboardButton(encrypt_text("المهندس محمد الزهيري"), callback_data="show_zuhayri_books")],
@@ -591,6 +592,20 @@ def send_abu_bakr_madani_laft_alanzar(client, callback_query):
 def show_hussein_almadidi(client, callback_query):
     path = os.path.join("قصائد المشروع", "حسين المعاضيدي", "هنا أرض الخلافة- حسين المعاضيدي.pdf")
     send_file(client, callback_query, path, "⚔️ كتاب: هنا أرض الخلافة (حسين المعاضيدي)")
+
+# --- قسم أبو دجانة الخوراساني ---
+@bot.on_callback_query(filters.regex("show_abu_dujana_khorasani"))
+def show_abu_dujana_khorasani(client, callback_query):
+    keyboard = [
+        [InlineKeyboardButton("📖 جامع كتاباته", callback_data="send_abu_dujana_khorasani_aljami")],
+        [InlineKeyboardButton("⬅️ رجوع", callback_data="show_archive")]
+    ]
+    callback_query.message.edit_text("✍️ اختر من مؤلفات أبو دجانة الخوراساني:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+@bot.on_callback_query(filters.regex("send_abu_dujana_khorasani_aljami"))
+def send_abu_dujana_khorasani_aljami(client, callback_query):
+    path = os.path.join("قصائد المشروع", "أبو دجانة الخوراساني", "Noor-Book.com  أبو دجانة الخراساني.pdf")
+    send_file(client, callback_query, path, "📖 جامع كتابات أبو دجانة الخوراساني")
 
 # --- قسم أحلام النصر ---
 AHLAM_ALNASER_BOOKS_MAP = {
